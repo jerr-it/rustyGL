@@ -1,6 +1,8 @@
 //! This module abstracts an OpenGL SSBO.
 //! It implements the drop trait for automatic clean-up.
-use crate::gpu::GPU;
+use std::ffi::c_void;
+
+use crate::gpu::GpuSsbo;
 
 pub struct SSBO {
     id: u32,
@@ -14,7 +16,7 @@ impl Drop for SSBO {
 
 impl SSBO {
     /// Creates a new ssbo on the gpu and copies the objects data to it
-    pub fn create_from<T: GPU>(binding: u32, object: &T, usage: gl::types::GLenum) -> SSBO {
+    pub fn create_from<T: GpuSsbo>(binding: u32, object: &T, usage: gl::types::GLenum) -> SSBO {
         let mut ssbo_id = 0 as u32;
 
         unsafe {
@@ -33,7 +35,7 @@ impl SSBO {
     }
 
     /// Creates a new ssbo with the given length
-    pub fn create_empty<T: GPU>(binding: u32, len: isize, usage: gl::types::GLenum) -> SSBO {
+    pub fn create_empty<T: GpuSsbo>(binding: u32, len: isize, usage: gl::types::GLenum) -> SSBO {
         let mut ssbo_id = 0 as u32;
 
         unsafe {
@@ -51,7 +53,7 @@ impl SSBO {
     }
 
     /// Updates the gpu memory of this buffer with the given data
-    fn update<T: GPU>(&self, object: &T, offset: isize) {
+    pub fn update<T: GpuSsbo>(&self, object: &T, offset: isize) {
         unsafe {
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, self.id);
 
@@ -63,22 +65,15 @@ impl SSBO {
     }
 
     /// Moves data from the gpu to the main memory
-    pub fn retrieve<T: Default>(&self, offset: isize) -> T {
-        let data: T = Default::default();
-
+    pub fn retrieve<T: GpuSsbo>(&self, object: &mut T, offset: isize) {
         unsafe {
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, self.id);
 
-            gl::GetNamedBufferSubData(
-                self.id,
-                offset,
-                std::mem::size_of::<T>() as isize,
-                std::mem::transmute(&data),
-            );
+            let (data, len) = object.raw();
+
+            gl::GetNamedBufferSubData(self.id, offset, len, data as *mut c_void);
 
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0);
         }
-
-        data
     }
 }

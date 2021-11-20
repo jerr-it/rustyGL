@@ -4,17 +4,33 @@
 
 use std::ffi::c_void;
 
-/// Should be implemented by types which need to be transferred to the gpu
-pub trait GPU {
+use crate::SSBO;
+
+/// Should be implemented by types which need to be transferred to a ssbo
+pub trait GpuSsbo {
     /// Returns a pointer and the corresponding datas length
     fn raw(&self) -> (*const c_void, isize) {
         let len = std::mem::size_of_val(self) as isize;
         (self as *const _ as *const c_void, len)
     }
+
+    fn store(&self, ssbo: &SSBO, offset: isize)
+    where
+        Self: Sized,
+    {
+        ssbo.update(self, offset);
+    }
+
+    fn load(&mut self, ssbo: &SSBO, offset: isize)
+    where
+        Self: Sized,
+    {
+        ssbo.retrieve(self, offset);
+    }
 }
 
 /// Implements the gpu trait for generic vectors
-impl<T> GPU for Vec<T> {
+impl<T> GpuSsbo for Vec<T> {
     fn raw(&self) -> (*const c_void, isize) {
         let len = (std::mem::size_of::<T>() * self.len()) as isize;
         (self.as_ptr() as *const c_void, len)
@@ -22,7 +38,7 @@ impl<T> GPU for Vec<T> {
 }
 
 /// Implements the gpu trait for a touple
-impl<T, U> GPU for (T, U) {
+impl<T, U> GpuSsbo for (T, U) {
     fn raw(&self) -> (*const c_void, isize) {
         let len = (std::mem::size_of::<T>() + std::mem::size_of::<U>()) as isize;
         (self as *const _ as *const c_void, len)
