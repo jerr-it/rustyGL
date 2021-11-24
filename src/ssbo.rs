@@ -16,6 +16,17 @@ impl Drop for SSBO {
 
 impl SSBO {
     /// Creates a new ssbo on the gpu and copies the objects data to it
+    /// 
+    /// # Arguments 
+    /// * `binding` - Binding index. See https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBindBufferBase.xhtml
+    /// * `object` - The object to be moved to gpu memory. Needs to implement GpuSsbo.
+    /// * `usage` - Memory usage pattern. See https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBufferData.xhtml
+    /// 
+    /// # Examples 
+    /// ```
+    /// let vec = vec![0 as u32; 10];
+    /// let ssbo = SSBO::create_from(1, &vec, gl::STATIC_DRAW);
+    /// ```
     pub fn create_from<T: GpuSsbo>(binding: u32, object: &T, usage: gl::types::GLenum) -> SSBO {
         let mut ssbo_id = 0 as u32;
 
@@ -34,8 +45,20 @@ impl SSBO {
         SSBO { id: ssbo_id }
     }
 
-    /// Creates a new ssbo with the given length
-    pub fn create_empty<T: GpuSsbo>(binding: u32, len: isize, usage: gl::types::GLenum) -> SSBO {
+    /// Creates a new ssbo with a given size
+    /// 
+    /// # Arguments
+    /// * `binding` - Binding index. See https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBindBufferBase.xhtml
+    /// * `size` - Size of the buffer.
+    /// * `usage` - Memory usage pattern. See https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBufferData.xhtml
+    /// 
+    /// # Examples
+    /// ```
+    /// // We want to store [1 as u32; 10]
+    /// // u32 corresponds to OpenGLs uint
+    /// let ssbo = SSBO::create_empty(0, 10 * gl::types::GLuint, gl::STATIC_DRAW); 
+    /// ```
+    pub fn create_empty<T: GpuSsbo>(binding: u32, size: isize, usage: gl::types::GLenum) -> SSBO {
         let mut ssbo_id = 0 as u32;
 
         unsafe {
@@ -44,7 +67,7 @@ impl SSBO {
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, ssbo_id);
             gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, binding, ssbo_id);
 
-            gl::BufferData(gl::SHADER_STORAGE_BUFFER, len, std::ptr::null(), usage);
+            gl::BufferData(gl::SHADER_STORAGE_BUFFER, size, std::ptr::null(), usage);
 
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0);
         }

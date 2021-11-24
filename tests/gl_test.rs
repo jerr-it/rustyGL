@@ -44,13 +44,13 @@ mod ssbo_test {
         setup: &(ComputeShader, Resolution, (u32, u32), SSBO),
     ) -> Result<(), Box<dyn std::error::Error>> {
         let mut resolution_on_gpu = Resolution { x: 1, y: 1 };
-        resolution_on_gpu.load(&setup.3, 0);
+        resolution_on_gpu.load_from(&setup.3, 0);
 
         assert_eq!(resolution_on_gpu.x, setup.1.x);
         assert_eq!(resolution_on_gpu.y, setup.1.y);
 
-        setup.2.store(&setup.3, 0);
-        resolution_on_gpu.load(&setup.3, 0);
+        setup.2.save_to(&setup.3, 0);
+        resolution_on_gpu.load_from(&setup.3, 0);
 
         assert_eq!(resolution_on_gpu.x, setup.2 .0);
         assert_eq!(resolution_on_gpu.y, setup.2 .1);
@@ -69,13 +69,13 @@ mod ssbo_test {
         setup: &(ComputeShader, Resolution, (u32, u32), SSBO),
     ) -> Result<(), Box<dyn std::error::Error>> {
         let mut resolution_on_gpu = Resolution { x: 1, y: 1 };
-        resolution_on_gpu.load(&setup.3, 0);
+        resolution_on_gpu.load_from(&setup.3, 0);
 
         assert_eq!(resolution_on_gpu.x, 400);
         assert_eq!(resolution_on_gpu.y, 400);
 
         let mut tup = (0 as u32, 0 as u32);
-        tup.load(&setup.3, 0);
+        tup.load_from(&setup.3, 0);
 
         assert_eq!(tup.0, 400);
         assert_eq!(tup.1, 400);
@@ -113,7 +113,7 @@ mod compute_shader_test {
         setup: &(ComputeShader, SSBO, Vec<u32>),
     ) -> Result<(), Box<dyn std::error::Error>> {
         let mut vec_on_gpu = vec![0 as u32; 10];
-        vec_on_gpu.load(&setup.1, 0);
+        vec_on_gpu.load_from(&setup.1, 0);
 
         assert_eq!(vec_on_gpu, setup.2);
 
@@ -129,7 +129,7 @@ mod compute_shader_test {
         setup: &(ComputeShader, SSBO, Vec<u32>),
     ) -> Result<(), Box<dyn std::error::Error>> {
         let mut vec_on_gpu = vec![0 as u32; 10];
-        vec_on_gpu.load(&setup.1, 0);
+        vec_on_gpu.load_from(&setup.1, 0);
 
         assert_eq!(vec_on_gpu, vec![123 as u32; 10]);
 

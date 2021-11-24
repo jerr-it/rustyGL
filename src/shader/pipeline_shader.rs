@@ -11,10 +11,36 @@ impl Drop for PipelineShader {
 }
 
 impl PipelineShader {
+
+    /// Creates a new PipelineShader.
+    /// Must contain either a vertex shader or a fragment shader or both.
+    /// 
+    /// # Arguments
+    /// * `vertex_shader_source` - Source for the vertex shader
+    /// * `fragment_shader_source` - Source for the fragment shader
+    /// 
+    /// # Examples
+    /// ```
+    /// const FRAG_SHADER: &str = "
+    ///     #version 330 core
+    ///     out vec4 FragColor;
+    ///
+    ///     void main()
+    ///     {
+    ///         FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    ///     }
+    /// ";
+    /// 
+    /// let shader = PipelineShader::create(Some(ShaderSource::String(FRAG_SHADER)), None)?;
+    /// ```
     pub fn create(
         vertex_shader_source: Option<ShaderSource>,
         fragment_shader_source: Option<ShaderSource>,
     ) -> Result<PipelineShader, Box<dyn std::error::Error>> {
+        if *(&vertex_shader_source.is_none()) && *(&fragment_shader_source.is_none()) {
+            Err("No shader input given")?
+        }
+
         let vertex_source = string_from_shader_source(vertex_shader_source)?;
         let fragment_source = string_from_shader_source(fragment_shader_source)?;
 
@@ -60,5 +86,24 @@ impl PipelineShader {
         }
 
         Ok(PipelineShader { id: program_id })
+    }
+
+    /// Use this pipeline shaders.
+    /// 
+    /// # Examples
+    /// ```
+    /// const FRAG_SHADER: &str = "
+    ///     #version 430
+    ///     layout(local_size_x = 1, local_size_y = 1) in;
+    /// 
+    ///     void main() {}";
+    /// 
+    /// let shader = PipelineShader::create(Some(ShaderSource::String(FRAG_SHADER)), None)?;
+    /// shader.enable();
+    /// ```
+    pub fn enable(&self){
+        unsafe {
+            gl::UseProgram(self.id);
+        }
     }
 }
