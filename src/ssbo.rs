@@ -2,7 +2,7 @@
 //! It implements the drop trait for automatic clean-up.
 use std::ffi::c_void;
 
-use crate::gpu::GpuSsbo;
+use crate::GpuSsbo;
 
 pub struct SSBO {
     id: u32,
