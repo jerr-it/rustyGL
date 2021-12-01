@@ -29,6 +29,8 @@ mod tests {
         //---------
         //Test setup
         //---------
+        open_rl::debug::enable();
+
         pub const COMPUTE_SHADER: &str = "
             #version 430
             layout(local_size_x = 1, local_size_y = 1) in;
@@ -112,6 +114,8 @@ mod tests {
         //-----------
         //Test setup
         //-----------
+        open_rl::debug::enable();
+
         pub const COMPUTE_SHADER: &str = "        
             #version 430
             layout(local_size_x = 1, local_size_y = 1) in;
@@ -179,6 +183,8 @@ mod tests {
         //-----------
         //Test setup
         //-----------
+        open_rl::debug::enable();
+
         const VERT_SHADER: &str = "
             #version 430
             layout (location = 0) in vec3 vPos;
