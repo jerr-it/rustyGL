@@ -4,7 +4,7 @@
 #[cfg(test)]
 mod tests {
     use glfw::Context;
-    use open_rl::{ComputeShader, GpuSsbo, SSBO, ShaderSource};
+    use open_rl::{ComputeShader, GpuSsbo, PipelineShader, SSBO, ShaderSource};
 
     pub struct Resolution {
         x: u32,
@@ -72,12 +72,16 @@ mod tests {
                 gl::Clear(gl::COLOR_BUFFER_BIT);
             }
 
+            //-----------
             //Test step
+            //-----------
             shader.dispatch(1, 1, 1, gl::SHADER_STORAGE_BARRIER_BIT);
 
             window.swap_buffers();
 
+            //-----------
             //Test step verification
+            //-----------
             resolution_on_gpu.load_from(&ssbo, 0);
 
             assert_eq!(resolution_on_gpu.x, 400);
@@ -140,14 +144,87 @@ mod tests {
                 gl::Clear(gl::COLOR_BUFFER_BIT);
             }
 
+            //-----------
             //Test step
+            //-----------
             shader.dispatch(10, 1, 1, gl::SHADER_STORAGE_BARRIER_BIT);
 
             window.swap_buffers();
 
+            //-----------
             //Test step verification
+            //-----------
             vec_on_gpu.load_from(&ssbo, 0);
             assert_eq!(vec_on_gpu, vec![123 as u32; 10]);
+
+            window.set_should_close(true);
+        }
+
+        Ok(())
+    }
+
+    #[test]
+    fn pipeline_shader_test() -> Result<(), Box<dyn std::error::Error>> {
+        let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS)?;
+        let (mut window, _) = glfw
+            .create_window(100, 100, "Test", glfw::WindowMode::Windowed)
+            .expect("");
+
+        window.make_current();
+
+        gl::load_with(|s| window.get_proc_address(s) as *const _);
+
+        glfw.set_swap_interval(glfw::SwapInterval::Sync(1));
+
+        //-----------
+        //Test setup
+        //-----------
+        const VERT_SHADER: &str = "
+            #version 430
+            layout (location = 0) in vec3 vPos;
+
+            void main(){
+                gl_Position = vec4(vPos, 1.0);
+            }
+        ";
+
+        const FRAG_SHADER: &str = "
+            #version 430
+            out vec4 FragColor;
+
+            void main()
+            {
+                FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+            }
+        ";
+
+        let shader = PipelineShader::create(
+            Some(ShaderSource::String(VERT_SHADER)), 
+            Some(ShaderSource::String(FRAG_SHADER))
+        )?;
+        shader.enable();
+
+        //-----------
+        //Test setup verification
+        //-----------
+
+
+        while !window.should_close() {
+            unsafe {
+                gl::ClearColor(0.0, 0.0, 0.0, 1.0);
+                gl::Clear(gl::COLOR_BUFFER_BIT);
+            }
+
+            //-----------
+            //Test step
+            //-----------
+            shader.enable();
+
+            window.swap_buffers();
+
+            //-----------
+            //Test step verification
+            //-----------
 
             window.set_should_close(true);
         }
