@@ -11,14 +11,13 @@ impl Drop for PipelineShader {
 }
 
 impl PipelineShader {
-
     /// Creates a new PipelineShader.
     /// Must contain either a vertex shader or a fragment shader or both.
-    /// 
+    ///
     /// # Arguments
     /// * `vertex_shader_source` - Source for the vertex shader
     /// * `fragment_shader_source` - Source for the fragment shader
-    /// 
+    ///
     /// # Examples
     /// ```
     /// const FRAG_SHADER: &str = "
@@ -30,7 +29,7 @@ impl PipelineShader {
     ///         FragColor = vec4(1.0, 1.0, 1.0, 1.0);
     ///     }
     /// ";
-    /// 
+    ///
     /// let shader = PipelineShader::create(Some(ShaderSource::String(FRAG_SHADER)), None)?;
     /// ```
     pub fn create(
@@ -89,19 +88,19 @@ impl PipelineShader {
     }
 
     /// Use this pipeline shaders.
-    /// 
+    ///
     /// # Examples
     /// ```
     /// const FRAG_SHADER: &str = "
     ///     #version 430
     ///     layout(local_size_x = 1, local_size_y = 1) in;
-    /// 
+    ///
     ///     void main() {}";
-    /// 
+    ///
     /// let shader = PipelineShader::create(Some(ShaderSource::String(FRAG_SHADER)), None)?;
     /// shader.enable();
     /// ```
-    pub fn enable(&self){
+    pub fn enable(&self) {
         unsafe {
             gl::UseProgram(self.id);
         }

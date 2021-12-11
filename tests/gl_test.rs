@@ -3,8 +3,9 @@
 
 #[cfg(test)]
 mod tests {
-    use glfw::Context;
-    use open_rl::{ComputeShader, GpuSsbo, PipelineShader, SSBO, ShaderSource};
+    use open_rl::{
+        vector::Vector2, ComputeShader, GpuSsbo, PipelineShader, ShaderSource, SSBO, VAO, VBO,
+    };
 
     pub struct Resolution {
         x: u32,
@@ -15,16 +16,23 @@ mod tests {
 
     #[test]
     fn ssbo_test() -> Result<(), Box<dyn std::error::Error>> {
-        let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS)?;
-        let (mut window, _) = glfw
-            .create_window(100, 100, "Test", glfw::WindowMode::Windowed)
-            .expect("");
+        let sdl = sdl2::init().unwrap();
+        let mut event_pump = sdl.event_pump().unwrap();
 
-        window.make_current();
+        let video_subsystem = sdl.video().unwrap();
+        let gl_attrib = video_subsystem.gl_attr();
+        gl_attrib.set_context_profile(sdl2::video::GLProfile::Core);
+        gl_attrib.set_context_version(4, 5);
 
-        gl::load_with(|s| window.get_proc_address(s) as *const _);
+        let window = video_subsystem
+            .window("Test", 100, 100)
+            .opengl()
+            .resizable()
+            .build()
+            .unwrap();
+        let _gl_context = window.gl_create_context().unwrap();
 
-        glfw.set_swap_interval(glfw::SwapInterval::Sync(1));
+        gl::load_with(|s| video_subsystem.gl_get_proc_address(s) as *const _);
 
         //---------
         //Test setup
@@ -56,7 +64,7 @@ mod tests {
         //---------
         //Test setup verification
         //---------
-        let mut resolution_on_gpu = Resolution {x:1,y:1};
+        let mut resolution_on_gpu = Resolution { x: 1, y: 1 };
         resolution_on_gpu.load_from(&ssbo, 0);
 
         assert_eq!(resolution_on_gpu.x, resolution_on_gpu.x);
@@ -68,7 +76,14 @@ mod tests {
         assert_eq!(resolution_on_gpu.x, resolution_tuple.0);
         assert_eq!(resolution_on_gpu.y, resolution_tuple.1);
 
-        while !window.should_close() {
+        'main: loop {
+            for event in event_pump.poll_iter() {
+                match event {
+                    sdl2::event::Event::Quit { .. } => break 'main,
+                    _ => {}
+                }
+            }
+
             unsafe {
                 gl::ClearColor(0.0, 0.0, 0.0, 1.0);
                 gl::Clear(gl::COLOR_BUFFER_BIT);
@@ -79,7 +94,7 @@ mod tests {
             //-----------
             shader.dispatch(1, 1, 1, gl::SHADER_STORAGE_BARRIER_BIT);
 
-            window.swap_buffers();
+            window.gl_swap_window();
 
             //-----------
             //Test step verification
@@ -90,9 +105,9 @@ mod tests {
             assert_eq!(resolution_on_gpu.y, 400);
 
             resolution_tuple.load_from(&ssbo, 0);
-            assert_eq!(resolution_tuple, (400,400));
+            assert_eq!(resolution_tuple, (400, 400));
 
-            window.set_should_close(true);
+            break;
         }
 
         Ok(())
@@ -100,16 +115,23 @@ mod tests {
 
     #[test]
     fn compute_shader_test() -> Result<(), Box<dyn std::error::Error>> {
-        let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS)?;
-        let (mut window, _) = glfw
-            .create_window(100, 100, "Test", glfw::WindowMode::Windowed)
-            .expect("");
+        let sdl = sdl2::init().unwrap();
+        let mut event_pump = sdl.event_pump().unwrap();
 
-        window.make_current();
+        let video_subsystem = sdl.video().unwrap();
+        let gl_attrib = video_subsystem.gl_attr();
+        gl_attrib.set_context_profile(sdl2::video::GLProfile::Core);
+        gl_attrib.set_context_version(4, 5);
 
-        gl::load_with(|s| window.get_proc_address(s) as *const _);
+        let window = video_subsystem
+            .window("Test", 100, 100)
+            .opengl()
+            .resizable()
+            .build()
+            .unwrap();
+        let _gl_context = window.gl_create_context().unwrap();
 
-        glfw.set_swap_interval(glfw::SwapInterval::Sync(1));
+        gl::load_with(|s| video_subsystem.gl_get_proc_address(s) as *const _);
 
         //-----------
         //Test setup
@@ -142,7 +164,13 @@ mod tests {
 
         assert_eq!(vec_on_gpu, vec);
 
-        while !window.should_close() {
+        'main: loop {
+            for event in event_pump.poll_iter() {
+                match event {
+                    sdl2::event::Event::Quit { .. } => break 'main,
+                    _ => {}
+                }
+            }
             unsafe {
                 gl::ClearColor(0.0, 0.0, 0.0, 1.0);
                 gl::Clear(gl::COLOR_BUFFER_BIT);
@@ -153,7 +181,7 @@ mod tests {
             //-----------
             shader.dispatch(10, 1, 1, gl::SHADER_STORAGE_BARRIER_BIT);
 
-            window.swap_buffers();
+            window.gl_swap_window();
 
             //-----------
             //Test step verification
@@ -161,7 +189,7 @@ mod tests {
             vec_on_gpu.load_from(&ssbo, 0);
             assert_eq!(vec_on_gpu, vec![123 as u32; 10]);
 
-            window.set_should_close(true);
+            break;
         }
 
         Ok(())
@@ -169,16 +197,23 @@ mod tests {
 
     #[test]
     fn pipeline_shader_test() -> Result<(), Box<dyn std::error::Error>> {
-        let mut glfw = glfw::init(glfw::FAIL_ON_ERRORS)?;
-        let (mut window, _) = glfw
-            .create_window(100, 100, "Test", glfw::WindowMode::Windowed)
-            .expect("");
+        let sdl = sdl2::init().unwrap();
+        let mut event_pump = sdl.event_pump().unwrap();
 
-        window.make_current();
+        let video_subsystem = sdl.video().unwrap();
+        let gl_attrib = video_subsystem.gl_attr();
+        gl_attrib.set_context_profile(sdl2::video::GLProfile::Core);
+        gl_attrib.set_context_version(4, 5);
 
-        gl::load_with(|s| window.get_proc_address(s) as *const _);
+        let window = video_subsystem
+            .window("Test", 100, 100)
+            .opengl()
+            .resizable()
+            .build()
+            .unwrap();
+        let _gl_context = window.gl_create_context().unwrap();
 
-        glfw.set_swap_interval(glfw::SwapInterval::Sync(1));
+        gl::load_with(|s| video_subsystem.gl_get_proc_address(s) as *const _);
 
         //-----------
         //Test setup
@@ -190,7 +225,7 @@ mod tests {
             layout (location = 0) in vec3 vPos;
 
             void main(){
-                gl_Position = vec4(vPos, 1.0);
+                gl_Position = vec4(vPos.x, vPos.y, vPos.z, 1.0);
             }
         ";
 
@@ -205,17 +240,34 @@ mod tests {
         ";
 
         let shader = PipelineShader::create(
-            Some(ShaderSource::String(VERT_SHADER)), 
-            Some(ShaderSource::String(FRAG_SHADER))
+            Some(ShaderSource::String(VERT_SHADER)),
+            Some(ShaderSource::String(FRAG_SHADER)),
         )?;
         shader.enable();
+
+        let vertices = vec![
+            Vector2::new(-0.5, -0.5),
+            Vector2::new(0.5, -0.5),
+            Vector2::new(0.0, 0.5),
+        ];
+
+        let vao = VAO::new();
+        let _vbo = VBO::new(
+            Some(&(vertices.iter().map(|elt| elt.as_vector3()).collect())),
+            0,
+        );
 
         //-----------
         //Test setup verification
         //-----------
 
-
-        while !window.should_close() {
+        'main: loop {
+            for event in event_pump.poll_iter() {
+                match event {
+                    sdl2::event::Event::Quit { .. } => break 'main,
+                    _ => {}
+                }
+            }
             unsafe {
                 gl::ClearColor(0.0, 0.0, 0.0, 1.0);
                 gl::Clear(gl::COLOR_BUFFER_BIT);
@@ -224,15 +276,15 @@ mod tests {
             //-----------
             //Test step
             //-----------
-            shader.enable();
+            vao.draw(gl::TRIANGLES, 3);
 
-            window.swap_buffers();
+            window.gl_swap_window();
 
             //-----------
             //Test step verification
             //-----------
 
-            window.set_should_close(true);
+            //window.set_should_close(true);
         }
 
         Ok(())
