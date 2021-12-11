@@ -1,5 +1,5 @@
 //! Use "cargo test -- --test-threads=1" to test this crate.
-//! GLFW windows aren't too happy about being created in parallel (as cargo runs it's tests).
+//! SDL windows aren't too happy about being created in parallel (as cargo runs it's tests).
 
 #[cfg(test)]
 mod tests {
@@ -284,7 +284,7 @@ mod tests {
             //Test step verification
             //-----------
 
-            //window.set_should_close(true);
+            break;
         }
 
         Ok(())
