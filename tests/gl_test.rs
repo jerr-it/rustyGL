@@ -252,9 +252,16 @@ mod tests {
         let indices = vec![0, 1, 3, 1, 2, 3];
 
         let vao = VAO::new();
-        let _vbo = VBO::new(
-            Some(&(vertices.iter().map(|elt| elt.as_vector3()).collect())),
+        let vbo = VBO::new(Some(
+            &(vertices.iter().map(|elt| elt.as_vector3()).collect()),
+        ));
+        vbo.set_attributes(
             0,
+            3,
+            gl::FLOAT,
+            gl::FALSE,
+            std::mem::size_of::<Vector3>() as i32,
+            std::ptr::null(),
         );
         let _ebo = EBO::new(Some(&indices));
 
@@ -278,6 +285,8 @@ mod tests {
             vao.draw(gl::TRIANGLES, indices.len() as i32, true);
 
             window.gl_swap_window();
+
+            break;
         }
 
         Ok(())

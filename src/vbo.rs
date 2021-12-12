@@ -1,3 +1,5 @@
+use std::ffi::c_void;
+
 use crate::vector::Vector3;
 
 pub struct VBO {
@@ -13,7 +15,7 @@ impl Drop for VBO {
 }
 
 impl VBO {
-    pub fn new(vertices: Option<&Vec<Vector3>>, location: u32) -> VBO {
+    pub fn new(vertices: Option<&Vec<Vector3>>) -> VBO {
         let mut id = 0 as u32;
         unsafe {
             gl::GenBuffers(1, &mut id);
@@ -29,20 +31,27 @@ impl VBO {
                     verts.as_ptr() as *const _,
                     gl::STATIC_DRAW,
                 );
-                gl::VertexAttribPointer(
-                    location,
-                    3,
-                    gl::FLOAT,
-                    gl::FALSE,
-                    std::mem::size_of::<Vector3>() as i32,
-                    std::ptr::null(),
-                );
-                gl::EnableVertexAttribArray(location);
             },
             None => {}
         }
 
         VBO { id }
+    }
+
+    pub fn set_attributes(
+        &self,
+        location: u32,
+        size: i32,
+        gl_type: gl::types::GLenum,
+        normalized: gl::types::GLboolean,
+        stride: i32,
+        offset: *const c_void,
+    ) {
+        unsafe {
+            gl::BindBuffer(gl::ARRAY_BUFFER, self.id);
+            gl::VertexAttribPointer(location, size, gl_type, normalized, stride, offset);
+            gl::EnableVertexAttribArray(location);
+        }
     }
 
     pub fn transfer(&self, vertices: &Vec<Vector3>) {
