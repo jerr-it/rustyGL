@@ -4,7 +4,8 @@
 #[cfg(test)]
 mod tests {
     use open_rl::{
-        vector::Vector2, ComputeShader, GpuSsbo, PipelineShader, ShaderSource, SSBO, VAO, VBO,
+        vector::{Vector2, Vector3},
+        ComputeShader, GpuSsbo, PipelineShader, ShaderSource, EBO, SSBO, VAO, VBO,
     };
 
     pub struct Resolution {
@@ -215,9 +216,6 @@ mod tests {
 
         gl::load_with(|s| video_subsystem.gl_get_proc_address(s) as *const _);
 
-        //-----------
-        //Test setup
-        //-----------
         open_rl::debug::enable();
 
         const VERT_SHADER: &str = "
@@ -246,20 +244,23 @@ mod tests {
         shader.enable();
 
         let vertices = vec![
-            Vector2::new(-0.5, -0.5),
+            Vector2::new(0.5, 0.5),
             Vector2::new(0.5, -0.5),
-            Vector2::new(0.0, 0.5),
+            Vector2::new(-0.5, -0.5),
+            Vector2::new(-0.5, 0.5),
         ];
+        let indices = vec![0, 1, 3, 1, 2, 3];
 
         let vao = VAO::new();
         let _vbo = VBO::new(
             Some(&(vertices.iter().map(|elt| elt.as_vector3()).collect())),
             0,
         );
+        let _ebo = EBO::new(Some(&indices));
 
-        //-----------
-        //Test setup verification
-        //-----------
+        unsafe {
+            gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
+        }
 
         'main: loop {
             for event in event_pump.poll_iter() {
@@ -273,18 +274,10 @@ mod tests {
                 gl::Clear(gl::COLOR_BUFFER_BIT);
             }
 
-            //-----------
-            //Test step
-            //-----------
-            vao.draw(gl::TRIANGLES, 3);
+            //Result should be a rectangle constructed from two triangles
+            vao.draw(gl::TRIANGLES, indices.len() as i32, true);
 
             window.gl_swap_window();
-
-            //-----------
-            //Test step verification
-            //-----------
-
-            break;
         }
 
         Ok(())

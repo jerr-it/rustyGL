@@ -22,10 +22,14 @@ impl VAO {
         VAO { id }
     }
 
-    pub fn draw(&self, mode: u32, vertex_count: i32) {
+    pub fn draw(&self, mode: u32, vertex_count: i32, has_ebo: bool) {
         unsafe {
             gl::BindVertexArray(self.id);
-            gl::DrawArrays(mode, 0, vertex_count);
+            if has_ebo {
+                gl::DrawElements(mode, vertex_count, gl::UNSIGNED_INT, std::ptr::null());
+            } else {
+                gl::DrawArrays(mode, 0, vertex_count);
+            }
         }
     }
 }

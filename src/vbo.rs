@@ -38,8 +38,6 @@ impl VBO {
                     std::ptr::null(),
                 );
                 gl::EnableVertexAttribArray(location);
-
-                gl::BindBuffer(gl::ARRAY_BUFFER, 0);
             },
             None => {}
         }
@@ -53,10 +51,9 @@ impl VBO {
             gl::BufferSubData(
                 gl::ARRAY_BUFFER,
                 0,
-                vertices.len() as isize * 3,
+                vertices.len() as isize * std::mem::size_of::<Vector3>() as isize,
                 vertices.as_ptr() as *const _,
             );
-            gl::BindBuffer(gl::ARRAY_BUFFER, 0);
         }
     }
 }
