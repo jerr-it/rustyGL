@@ -2,7 +2,7 @@
 //! It implements the drop trait for automatic clean-up.
 use std::ffi::c_void;
 
-use crate::gpu::GpuSsbo;
+use crate::GpuSsbo;
 
 pub struct SSBO {
     id: u32,
@@ -16,13 +16,13 @@ impl Drop for SSBO {
 
 impl SSBO {
     /// Creates a new ssbo on the gpu and copies the objects data to it
-    /// 
-    /// # Arguments 
+    ///
+    /// # Arguments
     /// * `binding` - Binding index. See https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBindBufferBase.xhtml
     /// * `object` - The object to be moved to gpu memory. Needs to implement GpuSsbo.
     /// * `usage` - Memory usage pattern. See https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBufferData.xhtml
-    /// 
-    /// # Examples 
+    ///
+    /// # Examples
     /// ```
     /// let vec = vec![0 as u32; 10];
     /// let ssbo = SSBO::create_from(1, &vec, gl::STATIC_DRAW);
@@ -46,17 +46,17 @@ impl SSBO {
     }
 
     /// Creates a new ssbo with a given size
-    /// 
+    ///
     /// # Arguments
     /// * `binding` - Binding index. See https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBindBufferBase.xhtml
     /// * `size` - Size of the buffer.
     /// * `usage` - Memory usage pattern. See https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBufferData.xhtml
-    /// 
+    ///
     /// # Examples
     /// ```
     /// // We want to store [1 as u32; 10]
     /// // u32 corresponds to OpenGLs uint
-    /// let ssbo = SSBO::create_empty(0, 10 * gl::types::GLuint, gl::STATIC_DRAW); 
+    /// let ssbo = SSBO::create_empty(0, 10 * gl::types::GLuint, gl::STATIC_DRAW);
     /// ```
     pub fn create_empty<T: GpuSsbo>(binding: u32, size: isize, usage: gl::types::GLenum) -> SSBO {
         let mut ssbo_id = 0 as u32;
@@ -76,6 +76,19 @@ impl SSBO {
     }
 
     /// Updates the gpu memory of this buffer with the given data
+    ///
+    /// # Arguments
+    /// * `object` - The data thats supposed to be moved to the gpu
+    /// * `offset` - Offset within the data
+    ///
+    /// # Examples
+    /// ```
+    /// // We want to store [1 as u32; 10]
+    /// // u32 corresponds to OpenGLs uint
+    /// let ssbo = SSBO::create_empty(0, 10 * gl::types::GLuint, gl::STATIC_DRAW);
+    /// let data = vec![1 as u32; 10];
+    /// ssbo.update(&data, 0);
+    /// ```
     pub fn update<T: GpuSsbo>(&self, object: &T, offset: isize) {
         unsafe {
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, self.id);
@@ -88,6 +101,21 @@ impl SSBO {
     }
 
     /// Moves data from the gpu to the main memory
+    ///
+    /// # Arguments
+    /// `object` - The object to copy the data into
+    /// `offset` - Offset within the data
+    ///
+    /// # Examples
+    /// ```
+    /// // We want to store [1 as u32; 10]
+    /// // u32 corresponds to OpenGLs uint
+    /// let data = vec![1 as u32; 10];
+    /// let data2 = vec![2 as u32; 10];
+    /// let ssbo = SSBO::create_empty(0, 10 * gl::types::GLuint, gl::STATIC_DRAW);
+    /// ssbo.update(&data, 0);
+    /// ssbo.retrieve(&mut data2, 0);
+    /// ```
     pub fn retrieve<T: GpuSsbo>(&self, object: &mut T, offset: isize) {
         unsafe {
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, self.id);

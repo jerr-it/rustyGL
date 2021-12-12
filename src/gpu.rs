@@ -2,8 +2,8 @@
 //! by types which are to be transferred to the gpu.
 //! A default implementation and some special types are implemented already
 
-use std::ffi::c_void;
 use crate::SSBO;
+use std::ffi::c_void;
 
 /// Should be implemented by types which need to be transferred to a ssbo
 pub trait GpuSsbo {
@@ -15,17 +15,17 @@ pub trait GpuSsbo {
 
     /// Saves this object to a given SSBO.
     /// Convenience function.
-    /// 
+    ///
     /// # Arguments
     /// * `ssbo` - The ssbo to save to
     /// * `offset` - Offset within the ssbo
-    /// 
+    ///
     /// # Examples
     /// ```
     /// let vec1 = [1 as u32; 10];
     /// let ssbo = SSBO::create_from(1, &vec1, gl::STATIC_DRAW);
     /// //SSBO content: [1, 1, ... , 1]
-    /// 
+    ///
     /// let vec2 = [2 as u32; 10];
     /// vec2.save_to(&ssbo, 0);
     /// //SSBO content: [2, 2, ... , 2]
@@ -39,16 +39,16 @@ pub trait GpuSsbo {
 
     /// Loads the content of a given SSBO into self.
     /// Convenience function.
-    /// 
+    ///
     /// # Arguments
     /// * `ssbo` - The ssbo to load from
     /// * `offset` - The offset within the ssbo
-    /// 
+    ///
     /// # Examples
     /// ```
     /// let vec1 = [1 as u32; 10];
     /// let ssbo = SSBO::create_from(1, &vec1, gl::STATIC_DRAW);
-    /// 
+    ///
     /// let vec2 = [2 as u32; 10];
     /// vec2.load_from(&ssbo, 0);
     /// //vec2: [1, 1, ... , 1]
@@ -62,17 +62,20 @@ pub trait GpuSsbo {
 
     /// Creates a new SSBO for this object.
     /// Convenience function.
-    /// 
+    ///
     /// # Arguments
     /// * `binding` - Binding index. See https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBindBufferBase.xhtml
     /// * `usage` - Usage hint. See https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBufferData.xhtml
-    /// 
+    ///
     /// # Examples
     /// ```
     /// let vec = [1 as u32; 10];
     /// let ssbo = vec.create_ssbo(1, gl::STATIC_DRAW);
     /// ```
-    fn create_ssbo(&self, binding: u32, usage: gl::types::GLenum) -> SSBO where Self: Sized {
+    fn create_ssbo(&self, binding: u32, usage: gl::types::GLenum) -> SSBO
+    where
+        Self: Sized,
+    {
         SSBO::create_from(binding, self, usage)
     }
 }
