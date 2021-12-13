@@ -13,3 +13,5 @@ pub use shader::{ComputeShader, PipelineShader, ShaderSource};
 pub use ssbo::SSBO;
 pub use vao::VAO;
 pub use vbo::VBO;
+
+pub type Color = vector::Vector3;

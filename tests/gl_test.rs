@@ -5,7 +5,7 @@
 mod tests {
     use open_rl::{
         vector::{Vector2, Vector3},
-        ComputeShader, GpuSsbo, PipelineShader, ShaderSource, EBO, SSBO, VAO, VBO,
+        Color, ComputeShader, GpuSsbo, PipelineShader, ShaderSource, EBO, SSBO, VAO, VBO,
     };
 
     pub struct Resolution {
@@ -221,19 +221,24 @@ mod tests {
         const VERT_SHADER: &str = "
             #version 430
             layout (location = 0) in vec3 vPos;
+            layout (location = 1) in vec3 vColor;
+
+            out vec3 outColor;
 
             void main(){
                 gl_Position = vec4(vPos.x, vPos.y, vPos.z, 1.0);
+                outColor = vColor;
             }
         ";
 
         const FRAG_SHADER: &str = "
             #version 430
             out vec4 FragColor;
+            in vec3 outColor;
 
             void main()
             {
-                FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+                FragColor = vec4(outColor, 1.0);
             }
         ";
 
@@ -243,19 +248,48 @@ mod tests {
         )?;
         shader.enable();
 
-        let vertices = vec![
-            Vector2::new(0.5, 0.5),
-            Vector2::new(0.5, -0.5),
-            Vector2::new(-0.5, -0.5),
-            Vector2::new(-0.5, 0.5),
+        let rectangle = vec![
+            Vector3::new(0.5, 0.5, 0.0),
+            Color::new(1.0, 0.0, 0.0),
+            Vector3::new(0.5, -0.5, 0.0),
+            Color::new(1.0, 1.0, 1.0),
+            Vector3::new(-0.5, -0.5, 0.0),
+            Color::new(0.0, 0.0, 1.0),
+            Vector3::new(-0.5, 0.5, 0.0),
+            Color::new(0.0, 1.0, 0.0),
         ];
-        let indices = vec![0, 1, 3, 1, 2, 3];
+        let rectangle_indices = vec![0, 1, 3, 1, 2, 3];
 
-        let vao = VAO::new();
-        let vbo = VBO::new(Some(
-            &(vertices.iter().map(|elt| elt.as_vector3()).collect()),
-        ));
-        vbo.set_attributes(
+        let rectangle_vao = VAO::new();
+        let rectangle_vbo = VBO::new(Some(&rectangle));
+        rectangle_vbo.set_attributes(
+            0,
+            3,
+            gl::FLOAT,
+            gl::FALSE,
+            2 * std::mem::size_of::<Vector3>() as i32,
+            std::ptr::null(),
+        );
+        rectangle_vbo.set_attributes(
+            1,
+            3,
+            gl::FLOAT,
+            gl::FALSE,
+            2 * std::mem::size_of::<Color>() as i32,
+            unsafe { std::ptr::null::<Color>().add(1) as *const _ },
+        );
+
+        let _rectangle_ebo = EBO::new(Some(&rectangle_indices));
+
+        let triangle = vec![
+            Vector2::new(-0.4, -0.4),
+            Vector2::new(0.4, -0.4),
+            Vector2::new(0.0, 0.4),
+        ];
+
+        let triangle_vao = VAO::new();
+        let triangle_vbo = VBO::new(Some(&triangle.iter().map(|elt| elt.as_vector3()).collect()));
+        triangle_vbo.set_attributes(
             0,
             3,
             gl::FLOAT,
@@ -263,11 +297,6 @@ mod tests {
             std::mem::size_of::<Vector3>() as i32,
             std::ptr::null(),
         );
-        let _ebo = EBO::new(Some(&indices));
-
-        unsafe {
-            gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
-        }
 
         'main: loop {
             for event in event_pump.poll_iter() {
@@ -282,11 +311,13 @@ mod tests {
             }
 
             //Result should be a rectangle constructed from two triangles
-            vao.draw(gl::TRIANGLES, indices.len() as i32, true);
+
+            rectangle_vao.draw(gl::TRIANGLES, rectangle_indices.len() as i32, true);
+            triangle_vao.draw(gl::TRIANGLES, 3, false);
 
             window.gl_swap_window();
 
-            break;
+            //break;
         }
 
         Ok(())
