@@ -1,20 +1,39 @@
 //! This module abstracts an OpenGL SSBO.
 //! It implements the drop trait for automatic clean-up.
-use std::ffi::c_void;
 
-use crate::GpuSsbo;
+use std::{
+    ffi::c_void,
+    ops::{Deref, DerefMut},
+};
 
-pub struct SSBO {
+use crate::GPU;
+
+pub struct SSBO<T> {
     id: u32,
+    content: T,
 }
 
-impl Drop for SSBO {
+impl<T> Drop for SSBO<T> {
     fn drop(&mut self) {
         unsafe { gl::DeleteBuffers(1, &self.id) }
     }
 }
 
-impl SSBO {
+impl<T: GPU> Deref for SSBO<T> {
+    type Target = T;
+
+    fn deref(&self) -> &T {
+        &self.content
+    }
+}
+
+impl<T: GPU> DerefMut for SSBO<T> {
+    fn deref_mut(&mut self) -> &mut T {
+        &mut self.content
+    }
+}
+
+impl<T: GPU> SSBO<T> {
     /// Creates a new ssbo on the gpu and copies the objects data to it
     ///
     /// # Arguments
@@ -25,9 +44,9 @@ impl SSBO {
     /// # Examples
     /// ```
     /// let vec = vec![0 as u32; 10];
-    /// let ssbo = SSBO::create_from(1, &vec, gl::STATIC_DRAW);
+    /// let ssbo = SSBO::create_from(1, vec, gl::STATIC_DRAW);
     /// ```
-    pub fn create_from<T: GpuSsbo>(binding: u32, object: &T, usage: gl::types::GLenum) -> SSBO {
+    pub fn create_from(binding: u32, object: T, usage: gl::types::GLenum) -> SSBO<T> {
         let mut ssbo_id = 0 as u32;
 
         unsafe {
@@ -42,87 +61,37 @@ impl SSBO {
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0);
         }
 
-        SSBO { id: ssbo_id }
+        let mut ssbo = SSBO {
+            id: ssbo_id,
+            content: object,
+        };
+
+        ssbo.update();
+
+        ssbo
     }
 
-    /// Creates a new ssbo with a given size
-    ///
-    /// # Arguments
-    /// * `binding` - Binding index. See https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBindBufferBase.xhtml
-    /// * `size` - Size of the buffer.
-    /// * `usage` - Memory usage pattern. See https://www.khronos.org/registry/OpenGL-Refpages/gl4/html/glBufferData.xhtml
-    ///
-    /// # Examples
-    /// ```
-    /// // We want to store [1 as u32; 10]
-    /// // u32 corresponds to OpenGLs uint
-    /// let ssbo = SSBO::create_empty(0, 10 * gl::types::GLuint, gl::STATIC_DRAW);
-    /// ```
-    pub fn create_empty<T: GpuSsbo>(binding: u32, size: isize, usage: gl::types::GLenum) -> SSBO {
-        let mut ssbo_id = 0 as u32;
-
-        unsafe {
-            gl::GenBuffers(1, &mut ssbo_id);
-
-            gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, ssbo_id);
-            gl::BindBufferBase(gl::SHADER_STORAGE_BUFFER, binding, ssbo_id);
-
-            gl::BufferData(gl::SHADER_STORAGE_BUFFER, size, std::ptr::null(), usage);
-
-            gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0);
-        }
-
-        SSBO { id: ssbo_id }
-    }
-
-    /// Updates the gpu memory of this buffer with the given data
-    ///
-    /// # Arguments
-    /// * `object` - The data thats supposed to be moved to the gpu
-    /// * `offset` - Offset within the data
-    ///
-    /// # Examples
-    /// ```
-    /// // We want to store [1 as u32; 10]
-    /// // u32 corresponds to OpenGLs uint
-    /// let ssbo = SSBO::create_empty(0, 10 * gl::types::GLuint, gl::STATIC_DRAW);
-    /// let data = vec![1 as u32; 10];
-    /// ssbo.update(&data, 0);
-    /// ```
-    pub fn update<T: GpuSsbo>(&self, object: &T, offset: isize) {
+    /// Sends content to the gpu
+    pub fn update(&mut self) {
         unsafe {
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, self.id);
 
-            let (data, len) = object.raw();
-            gl::NamedBufferSubData(self.id, offset, len, data);
+            let (data, len) = self.content.raw();
+
+            gl::NamedBufferSubData(self.id, 0, len, data as *mut c_void);
 
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0);
         }
     }
 
-    /// Moves data from the gpu to the main memory
-    ///
-    /// # Arguments
-    /// `object` - The object to copy the data into
-    /// `offset` - Offset within the data
-    ///
-    /// # Examples
-    /// ```
-    /// // We want to store [1 as u32; 10]
-    /// // u32 corresponds to OpenGLs uint
-    /// let data = vec![1 as u32; 10];
-    /// let data2 = vec![2 as u32; 10];
-    /// let ssbo = SSBO::create_empty(0, 10 * gl::types::GLuint, gl::STATIC_DRAW);
-    /// ssbo.update(&data, 0);
-    /// ssbo.retrieve(&mut data2, 0);
-    /// ```
-    pub fn retrieve<T: GpuSsbo>(&self, object: &mut T, offset: isize) {
+    /// Retrieves the data from the gpu and stores it back into content
+    pub fn load(&mut self) {
         unsafe {
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, self.id);
 
-            let (data, len) = object.raw();
+            let (data, len) = self.content.raw();
 
-            gl::GetNamedBufferSubData(self.id, offset, len, data as *mut c_void);
+            gl::GetNamedBufferSubData(self.id, 0, len, data as *mut c_void);
 
             gl::BindBuffer(gl::SHADER_STORAGE_BUFFER, 0);
         }

@@ -8,7 +8,7 @@ mod vbo;
 pub mod vector;
 
 pub use ebo::EBO;
-pub use gpu::GpuSsbo;
+pub use gpu::GPU;
 pub use shader::{ComputeShader, PipelineShader, ShaderSource};
 pub use ssbo::SSBO;
 pub use vao::VAO;

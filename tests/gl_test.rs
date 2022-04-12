@@ -5,7 +5,7 @@
 mod tests {
     use open_rl::{
         vector::{Vector2, Vector3},
-        Color, ComputeShader, GpuSsbo, PipelineShader, ShaderSource, EBO, SSBO, VAO, VBO,
+        Color, ComputeShader, PipelineShader, ShaderSource, EBO, GPU, SSBO, VAO, VBO,
     };
 
     pub struct Resolution {
@@ -13,7 +13,7 @@ mod tests {
         y: u32,
     }
 
-    impl GpuSsbo for Resolution {}
+    impl GPU for Resolution {}
 
     #[test]
     fn ssbo_test() -> Result<(), Box<dyn std::error::Error>> {
@@ -58,24 +58,29 @@ mod tests {
         let shader = ComputeShader::create(ShaderSource::String(COMPUTE_SHADER))?;
 
         let resolution_struct = Resolution { x: 200, y: 200 };
-        let mut resolution_tuple = (100 as u32, 100 as u32); //TODO use
 
-        let ssbo = SSBO::create_from(0, &resolution_struct, gl::STATIC_DRAW);
+        let mut ssbo = SSBO::create_from(0, resolution_struct, gl::STATIC_DRAW);
 
         //---------
         //Test setup verification
         //---------
-        let mut resolution_on_gpu = Resolution { x: 1, y: 1 };
-        resolution_on_gpu.load_from(&ssbo, 0);
+        let target_resolution = Resolution { x: 200, y: 200 };
+        ssbo.load();
 
-        assert_eq!(resolution_on_gpu.x, resolution_on_gpu.x);
-        assert_eq!(resolution_on_gpu.y, resolution_on_gpu.y);
+        //Verify setup
+        assert_eq!((*ssbo).x, target_resolution.x);
+        assert_eq!((*ssbo).y, target_resolution.y);
 
-        resolution_tuple.save_to(&ssbo, 0);
-        resolution_on_gpu.load_from(&ssbo, 0);
+        (*ssbo).x = 350;
+        (*ssbo).y = 350;
 
-        assert_eq!(resolution_on_gpu.x, resolution_tuple.0);
-        assert_eq!(resolution_on_gpu.y, resolution_tuple.1);
+        ssbo.update();
+        ssbo.load();
+
+        let target = Resolution { x: 350, y: 350 };
+
+        assert_eq!((*ssbo).x, target.x);
+        assert_eq!((*ssbo).y, target.y);
 
         'main: loop {
             for event in event_pump.poll_iter() {
@@ -100,13 +105,11 @@ mod tests {
             //-----------
             //Test step verification
             //-----------
-            resolution_on_gpu.load_from(&ssbo, 0);
+            let verify_resolution = Resolution { x: 400, y: 400 };
+            ssbo.load();
 
-            assert_eq!(resolution_on_gpu.x, 400);
-            assert_eq!(resolution_on_gpu.y, 400);
-
-            resolution_tuple.load_from(&ssbo, 0);
-            assert_eq!(resolution_tuple, (400, 400));
+            assert_eq!((*ssbo).x, verify_resolution.x);
+            assert_eq!((*ssbo).y, verify_resolution.y);
 
             break;
         }
@@ -155,15 +158,15 @@ mod tests {
         let shader = ComputeShader::create(ShaderSource::String(COMPUTE_SHADER))?;
         let vec = vec![0 as u32; 10];
 
-        let ssbo = SSBO::create_from(1, &vec, gl::STATIC_DRAW);
+        let mut ssbo = SSBO::create_from(1, vec, gl::STATIC_DRAW);
 
         //-----------
         //Test setup verification
         //-----------
-        let mut vec_on_gpu = vec![0 as u32; 10];
-        vec_on_gpu.load_from(&ssbo, 0);
+        let vec_on_gpu = vec![0 as u32; 10];
+        ssbo.load();
 
-        assert_eq!(vec_on_gpu, vec);
+        assert_eq!(*ssbo, vec_on_gpu);
 
         'main: loop {
             for event in event_pump.poll_iter() {
@@ -187,8 +190,9 @@ mod tests {
             //-----------
             //Test step verification
             //-----------
-            vec_on_gpu.load_from(&ssbo, 0);
-            assert_eq!(vec_on_gpu, vec![123 as u32; 10]);
+            ssbo.load();
+
+            assert_eq!(*ssbo, vec![123 as u32; 10]);
 
             break;
         }
