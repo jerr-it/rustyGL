@@ -14,4 +14,4 @@ pub use ssbo::SSBO;
 pub use vao::VAO;
 pub use vbo::VBO;
 
-pub type Color = vector::Vector3;
+pub type Color<T> = vector::Vector3<T>;

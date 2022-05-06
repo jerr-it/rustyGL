@@ -1,72 +1,72 @@
-pub use std::ops;
+use std::ops::{Add, AddAssign, Sub, SubAssign, Mul, MulAssign};
 
-use super::vector3::Vector3;
+use super::Vector3;
 
 #[repr(C)]
-pub struct Vector2 {
-    x: f32,
-    y: f32,
+pub struct Vector2<T> {
+    x: T,
+    y: T,
 }
 
-impl Vector2 {
-    pub fn new(x: f32, y: f32) -> Vector2 {
+impl<T: Default + Copy> Vector2<T> {
+    pub fn new(x: T, y: T) -> Vector2<T> {
         Vector2 { x, y }
     }
 
-    pub fn as_vector3(&self) -> Vector3 {
-        Vector3::new(self.x, self.y, 0.0)
+    pub fn as_vector3(&self) -> Vector3<T> {
+        Vector3::new(self.x, self.y, Default::default())
     }
 }
 
-impl ops::Add<Vector2> for Vector2 {
-    type Output = Vector2;
+impl<T: Add<Output = T>> Add<Vector2<T>> for Vector2<T> {
+    type Output = Vector2<T>;
 
-    fn add(self, rhs: Vector2) -> Self::Output {
+    fn add(self, rhs: Vector2<T>) -> Self::Output {
         Vector2 {
             x: self.x + rhs.x,
-            y: self.y + rhs.y,
+            y: self.y + rhs.y
         }
     }
 }
 
-impl ops::Sub<Vector2> for Vector2 {
-    type Output = Vector2;
-
-    fn sub(self, rhs: Vector2) -> Self::Output {
-        Vector2 {
-            x: self.x - rhs.x,
-            y: self.y - rhs.y,
-        }
-    }
-}
-
-impl ops::Mul<f32> for Vector2 {
-    type Output = Vector2;
-
-    fn mul(self, rhs: f32) -> Self::Output {
-        Vector2 {
-            x: self.x * rhs,
-            y: self.y * rhs,
-        }
-    }
-}
-
-impl ops::AddAssign<Vector2> for Vector2 {
-    fn add_assign(&mut self, rhs: Vector2) {
+impl<T: AddAssign> AddAssign<Vector2<T>> for Vector2<T> {
+    fn add_assign(&mut self, rhs: Vector2<T>) {
         self.x += rhs.x;
         self.y += rhs.y;
     }
 }
 
-impl ops::SubAssign<Vector2> for Vector2 {
-    fn sub_assign(&mut self, rhs: Vector2) {
+impl<T: Sub<Output = T>> Sub<Vector2<T>> for Vector2<T> {
+    type Output = Vector2<T>;
+
+    fn sub(self, rhs: Vector2<T>) -> Self::Output {
+        Vector2 {
+            x: self.x - rhs.x,
+            y: self.y - rhs.y
+        }
+    }
+}
+
+impl<T: SubAssign> SubAssign<Vector2<T>> for Vector2<T> {
+    fn sub_assign(&mut self, rhs: Vector2<T>) {
         self.x -= rhs.x;
         self.y -= rhs.y;
     }
 }
 
-impl ops::MulAssign<f32> for Vector2 {
-    fn mul_assign(&mut self, rhs: f32) {
+impl<T: Mul<Output = T> + Copy> Mul<T> for Vector2<T> {
+    type Output = Vector2<T>;
+
+    fn mul(self, rhs: T) -> Self::Output {
+        Vector2 {
+            x: self.x * rhs,
+            y: self.y * rhs
+        }
+    }
+}
+
+impl<T: MulAssign + Copy> MulAssign<T> for Vector2<T> {
+    fn mul_assign(&mut self, rhs: T) {
         self.x *= rhs;
         self.y *= rhs;
     }

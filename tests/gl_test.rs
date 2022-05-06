@@ -271,7 +271,7 @@ mod tests {
             3,
             gl::FLOAT,
             gl::FALSE,
-            2 * std::mem::size_of::<Vector3>() as i32,
+            2 * std::mem::size_of::<Vector3<f32>>() as i32,
             std::ptr::null(),
         );
         rectangle_vbo.set_attributes(
@@ -279,12 +279,12 @@ mod tests {
             3,
             gl::FLOAT,
             gl::FALSE,
-            2 * std::mem::size_of::<Color>() as i32,
-            unsafe { std::ptr::null::<Color>().add(1) as *const _ },
+            2 * std::mem::size_of::<Color<f32>>() as i32,
+            unsafe { std::ptr::null::<Color<f32>>().add(1) as *const _ },
         );
 
         let _rectangle_ebo = EBO::new(Some(&rectangle_indices));
-
+        
         let triangle = vec![
             Vector2::new(-0.4, -0.4),
             Vector2::new(0.4, -0.4),
@@ -298,7 +298,7 @@ mod tests {
             3,
             gl::FLOAT,
             gl::FALSE,
-            std::mem::size_of::<Vector3>() as i32,
+            std::mem::size_of::<Vector3<f32>>() as i32,
             std::ptr::null(),
         );
 
