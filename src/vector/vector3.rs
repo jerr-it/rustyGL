@@ -1,5 +1,7 @@
 use std::ops::{Add, AddAssign, Sub, SubAssign, Mul, MulAssign};
 
+use super::Vector4;
+
 #[repr(C)]
 pub struct Vector3<T> {
     x: T,
@@ -7,9 +9,25 @@ pub struct Vector3<T> {
     z: T,
 }
 
-impl<T> Vector3<T> {
+impl<T: Default + Copy> Vector3<T> {
     pub fn new(x: T, y: T, z: T) -> Vector3<T>{
         Vector3 { x, y, z }
+    }
+
+    pub fn as_vector4(&self) -> Vector4<T> {
+        Vector4::new(self.x, self.y, self.z, Default::default())
+    }
+
+    pub fn x(&self) -> T {
+        self.x
+    }
+
+    pub fn y(&self) -> T {
+        self.y
+    }
+
+    pub fn z(&self) -> T {
+        self.z
     }
 }
 

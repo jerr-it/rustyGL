@@ -1,3 +1,5 @@
+use crate::vector::{Vector2, Vector4, Vector3};
+
 use super::{compile_shader, link_program, ShaderSource};
 
 pub struct ComputeShader {
@@ -79,6 +81,174 @@ impl ComputeShader {
             gl::UseProgram(self.id);
             gl::DispatchCompute(num_groups_x, num_groups_y, num_groups_z);
             gl::MemoryBarrier(barrier);
+        }
+    }
+
+    pub fn set_uniform_bool(&self, name: &str, value: bool) {
+        unsafe {
+            gl::Uniform1i(
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
+                value as i32
+            );
+        }
+    }
+
+    pub fn set_uniform_bool2(&self, name: &str, value: Vector2<bool>) {
+        unsafe {
+            gl::Uniform2i(
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
+                value.x() as i32, 
+                value.y() as i32
+            );
+        }
+    }
+    
+    pub fn set_uniform_bool3(&self, name: &str, value: Vector3<bool>) {
+        unsafe {
+            gl::Uniform3i(
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
+                value.x() as i32, 
+                value.y() as i32, 
+                value.z() as i32
+            );
+        }
+    }
+
+    pub fn set_uniform_bool4(&self, name: &str, value: Vector4<bool>) {
+        unsafe {
+            gl::Uniform4i(
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
+                value.x() as i32, 
+                value.y() as i32, 
+                value.z() as i32, 
+                value.w() as i32
+            );
+        }
+    }
+
+    pub fn set_uniform_float(&self, name: &str, value: f32) {
+        unsafe {
+            gl::Uniform1f(
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
+                value
+            );
+        }
+    }
+
+    pub fn set_uniform_float2(&self, name: &str, value: Vector2<f32>) {
+        unsafe {
+            gl::Uniform2f(
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
+                value.x(), 
+                value.y()
+            );
+        }
+    }
+    
+    pub fn set_uniform_float3(&self, name: &str, value: Vector3<f32>) {
+        unsafe {
+            gl::Uniform3f(
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
+                value.x(), 
+                value.y(), 
+                value.z()
+            );
+        }
+    }
+
+    pub fn set_uniform_float4(&self, name: &str, value: Vector4<f32>) {
+        unsafe {
+            gl::Uniform4f(
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
+                value.x(), 
+                value.y(), 
+                value.z(), 
+                value.w()
+            );
+        }
+    }
+
+    pub fn set_uniform_int(&self, name: &str, value: i32) {
+        unsafe {
+            gl::Uniform1i(
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
+                value
+            );
+        }
+    }
+
+    pub fn set_uniform_int2(&self, name: &str, value: Vector2<i32>) {
+        unsafe {
+            gl::Uniform2i(
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
+                value.x(), 
+                value.y()
+            );
+        }
+    }
+    
+    pub fn set_uniform_int3(&self, name: &str, value: Vector3<i32>) {
+        unsafe {
+            gl::Uniform3i(
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
+                value.x(), 
+                value.y(), 
+                value.z()
+            );
+        }
+    }
+
+    pub fn set_uniform_int4(&self, name: &str, value: Vector4<i32>) {
+        unsafe {
+            gl::Uniform4i(
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
+                value.x(), 
+                value.y(), 
+                value.z(), 
+                value.w()
+            );
+        }
+    }
+
+    pub fn set_uniform_uint(&self, name: &str, value: u32) {
+        unsafe {
+            gl::Uniform1ui(
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
+                value
+            );
+        }
+    }
+
+    pub fn set_uniform_uint2(&self, name: &str, value: Vector2<u32>) {
+        unsafe {
+            gl::Uniform2ui(
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
+                value.x(), 
+                value.y()
+            );
+        }
+    }
+    
+    pub fn set_uniform_uint3(&self, name: &str, value: Vector3<u32>) {
+        unsafe {
+            gl::Uniform3ui(
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
+                value.x(), 
+                value.y(), 
+                value.z()
+            );
+        }
+    }
+
+    pub fn set_uniform_uint4(&self, name: &str, value: Vector4<u32>) {
+        unsafe {
+            gl::Uniform4ui(
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
+                value.x(), 
+                value.y(), 
+                value.z(), 
+                value.w()
+            );
         }
     }
 }
