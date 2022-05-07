@@ -1,3 +1,5 @@
+use std::ffi::CString;
+
 use crate::vector::{Vector2, Vector3, Vector4};
 
 use super::{compile_shader, link_program, string_from_shader_source, ShaderSource};
@@ -110,6 +112,9 @@ impl PipelineShader {
 
     pub fn set_uniform_bool(&self, name: &str, value: bool) {
         unsafe {
+            gl::UseProgram(self.id);
+            let name = CString::new(name).unwrap();
+
             gl::Uniform1i(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
                 value as i32
@@ -119,6 +124,9 @@ impl PipelineShader {
 
     pub fn set_uniform_bool2(&self, name: &str, value: Vector2<bool>) {
         unsafe {
+            gl::UseProgram(self.id);
+            let name = CString::new(name).unwrap();
+
             gl::Uniform2i(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
                 value.x() as i32, 
@@ -129,6 +137,9 @@ impl PipelineShader {
     
     pub fn set_uniform_bool3(&self, name: &str, value: Vector3<bool>) {
         unsafe {
+            gl::UseProgram(self.id);
+            let name = CString::new(name).unwrap();
+
             gl::Uniform3i(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
                 value.x() as i32, 
@@ -140,6 +151,9 @@ impl PipelineShader {
 
     pub fn set_uniform_bool4(&self, name: &str, value: Vector4<bool>) {
         unsafe {
+            gl::UseProgram(self.id);
+            let name = CString::new(name).unwrap();
+
             gl::Uniform4i(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
                 value.x() as i32, 
@@ -152,6 +166,9 @@ impl PipelineShader {
 
     pub fn set_uniform_float(&self, name: &str, value: f32) {
         unsafe {
+            gl::UseProgram(self.id);
+            let name = CString::new(name).unwrap();
+
             gl::Uniform1f(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
                 value
@@ -161,6 +178,9 @@ impl PipelineShader {
 
     pub fn set_uniform_float2(&self, name: &str, value: Vector2<f32>) {
         unsafe {
+            gl::UseProgram(self.id);
+            let name = CString::new(name).unwrap();
+
             gl::Uniform2f(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
                 value.x(), 
@@ -171,6 +191,9 @@ impl PipelineShader {
     
     pub fn set_uniform_float3(&self, name: &str, value: Vector3<f32>) {
         unsafe {
+            gl::UseProgram(self.id);
+            let name = CString::new(name).unwrap();
+
             gl::Uniform3f(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
                 value.x(), 
@@ -182,6 +205,9 @@ impl PipelineShader {
 
     pub fn set_uniform_float4(&self, name: &str, value: Vector4<f32>) {
         unsafe {
+            gl::UseProgram(self.id);
+            let name = CString::new(name).unwrap();
+
             gl::Uniform4f(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
                 value.x(), 
@@ -194,8 +220,11 @@ impl PipelineShader {
 
     pub fn set_uniform_int(&self, name: &str, value: i32) {
         unsafe {
+            gl::UseProgram(self.id);
+            let cstr = CString::new(name).unwrap();
+
             gl::Uniform1i(
-                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
+                gl::GetUniformLocation(self.id, cstr.as_ptr() as *const i8), 
                 value
             );
         }
@@ -203,6 +232,9 @@ impl PipelineShader {
 
     pub fn set_uniform_int2(&self, name: &str, value: Vector2<i32>) {
         unsafe {
+            gl::UseProgram(self.id);
+            let name = CString::new(name).unwrap();
+
             gl::Uniform2i(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
                 value.x(), 
@@ -213,6 +245,9 @@ impl PipelineShader {
     
     pub fn set_uniform_int3(&self, name: &str, value: Vector3<i32>) {
         unsafe {
+            gl::UseProgram(self.id);
+            let name = CString::new(name).unwrap();
+
             gl::Uniform3i(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
                 value.x(), 
@@ -224,6 +259,9 @@ impl PipelineShader {
 
     pub fn set_uniform_int4(&self, name: &str, value: Vector4<i32>) {
         unsafe {
+            gl::UseProgram(self.id);
+            let name = CString::new(name).unwrap();
+
             gl::Uniform4i(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
                 value.x(), 
@@ -236,6 +274,9 @@ impl PipelineShader {
 
     pub fn set_uniform_uint(&self, name: &str, value: u32) {
         unsafe {
+            gl::UseProgram(self.id);
+            let name = CString::new(name).unwrap();
+
             gl::Uniform1ui(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
                 value
@@ -245,6 +286,9 @@ impl PipelineShader {
 
     pub fn set_uniform_uint2(&self, name: &str, value: Vector2<u32>) {
         unsafe {
+            gl::UseProgram(self.id);
+            let name = CString::new(name).unwrap();
+
             gl::Uniform2ui(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
                 value.x(), 
@@ -255,6 +299,9 @@ impl PipelineShader {
     
     pub fn set_uniform_uint3(&self, name: &str, value: Vector3<u32>) {
         unsafe {
+            gl::UseProgram(self.id);
+            let name = CString::new(name).unwrap();
+
             gl::Uniform3ui(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
                 value.x(), 
@@ -266,6 +313,9 @@ impl PipelineShader {
 
     pub fn set_uniform_uint4(&self, name: &str, value: Vector4<u32>) {
         unsafe {
+            gl::UseProgram(self.id);
+            let name = CString::new(name).unwrap();
+
             gl::Uniform4ui(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
                 value.x(), 

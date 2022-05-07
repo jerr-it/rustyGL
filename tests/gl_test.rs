@@ -146,12 +146,14 @@ mod tests {
             #version 430
             layout(local_size_x = 1, local_size_y = 1) in;
 
+            uniform int value;
+
             layout(std430, binding = 1) buffer Content {
                 uint[] content;
             } arr;
 
             void main() {
-                arr.content[gl_GlobalInvocationID.x] = 123;
+                arr.content[gl_GlobalInvocationID.x] = value;
             }
         ";
 
@@ -167,6 +169,8 @@ mod tests {
         ssbo.load();
 
         assert_eq!(*ssbo, vec_on_gpu);
+
+        shader.set_uniform_int("value", 123);
 
         'main: loop {
             for event in event_pump.poll_iter() {
