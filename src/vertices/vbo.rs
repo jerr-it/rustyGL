@@ -1,6 +1,6 @@
 use std::ffi::c_void;
 
-use crate::vector::Vector3;
+use super::Vertex;
 
 pub struct VBO {
     id: u32,
@@ -15,7 +15,7 @@ impl Drop for VBO {
 }
 
 impl VBO {
-    pub fn new(vertices: Option<&Vec<Vector3<f32>>>) -> VBO {
+    pub fn new(vertices: Option<&Vec<Vertex>>) -> VBO {
         let mut id = 0 as u32;
         unsafe {
             gl::GenBuffers(1, &mut id);
@@ -27,7 +27,7 @@ impl VBO {
 
                 gl::BufferData(
                     gl::ARRAY_BUFFER,
-                    verts.len() as isize * std::mem::size_of::<Vector3<f32>>() as isize,
+                    verts.len() as isize * std::mem::size_of::<Vertex>() as isize,
                     verts.as_ptr() as *const _,
                     gl::STATIC_DRAW,
                 );
@@ -54,13 +54,13 @@ impl VBO {
         }
     }
 
-    pub fn transfer(&self, vertices: &Vec<Vector3<f32>>) {
+    pub fn transfer(&self, vertices: &Vec<Vertex>) {
         unsafe {
             gl::BindBuffer(gl::ARRAY_BUFFER, self.id);
             gl::BufferSubData(
                 gl::ARRAY_BUFFER,
                 0,
-                vertices.len() as isize * std::mem::size_of::<Vector3<f32>>() as isize,
+                vertices.len() as isize * std::mem::size_of::<Vertex>() as isize,
                 vertices.as_ptr() as *const _,
             );
         }

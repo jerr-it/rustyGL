@@ -1,5 +1,6 @@
 pub struct EBO {
     id: u32,
+    len: usize,
 }
 
 impl Drop for EBO {
@@ -17,8 +18,11 @@ impl EBO {
             gl::GenBuffers(1, &mut id);
         }
 
+        let mut len = 0;
+
         match indices {
             Some(ind) => unsafe {
+                len = ind.len();
                 gl::BindBuffer(gl::ELEMENT_ARRAY_BUFFER, id);
                 gl::BufferData(
                     gl::ELEMENT_ARRAY_BUFFER,
@@ -30,6 +34,10 @@ impl EBO {
             None => {}
         }
 
-        EBO { id }
+        EBO { id, len }
+    }
+
+    pub fn len(&self) -> usize {
+        self.len
     }
 }

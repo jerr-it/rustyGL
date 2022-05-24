@@ -1,5 +1,6 @@
 use std::ops::{Add, AddAssign, Sub, SubAssign, Mul, MulAssign};
 
+#[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Vector4<T> {
     x: T,
@@ -13,20 +14,12 @@ impl<T: Copy> Vector4<T> {
         Vector4 { x, y, z, w }
     }
 
-    pub fn x(&self) -> T {
-        self.x
+    pub fn components(&self) -> (&T, &T, &T, &T) {
+        (&self.x, &self.y, &self.z, &self.w)
     }
 
-    pub fn y(&self) -> T {
-        self.y
-    }
-
-    pub fn z(&self) -> T {
-        self.z
-    }
-
-    pub fn w(&self) -> T {
-        self.w
+    pub fn components_mut(&mut self) -> (&mut T, &mut T, &mut T, &mut T) {
+        (&mut self.x, &mut self.y, &mut self.z, &mut self.w)
     }
 }
 

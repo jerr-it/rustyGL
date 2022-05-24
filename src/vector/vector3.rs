@@ -2,6 +2,7 @@ use std::ops::{Add, AddAssign, Sub, SubAssign, Mul, MulAssign};
 
 use super::Vector4;
 
+#[derive(Clone, Copy)]
 #[repr(C)]
 pub struct Vector3<T> {
     x: T,
@@ -18,16 +19,12 @@ impl<T: Default + Copy> Vector3<T> {
         Vector4::new(self.x, self.y, self.z, Default::default())
     }
 
-    pub fn x(&self) -> T {
-        self.x
+    pub fn components(&self) -> (&T, &T, &T) {
+        (&self.x, &self.y, &self.z)
     }
 
-    pub fn y(&self) -> T {
-        self.y
-    }
-
-    pub fn z(&self) -> T {
-        self.z
+    pub fn components_mut(&mut self) -> (&mut T, &mut T, &mut T) {
+        (&mut self.x, &mut self.y, &mut self.z)
     }
 }
 
