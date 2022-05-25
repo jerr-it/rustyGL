@@ -22,6 +22,12 @@ impl VAO {
         VAO { id }
     }
 
+    pub fn bind(&self) {
+        unsafe {
+            gl::BindVertexArray(self.id);
+        }
+    }
+
     pub fn draw(&self, mode: u32, vertex_count: i32, has_ebo: bool) {
         unsafe {
             gl::BindVertexArray(self.id);

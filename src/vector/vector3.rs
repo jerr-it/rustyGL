@@ -2,7 +2,7 @@ use std::ops::{Add, AddAssign, Sub, SubAssign, Mul, MulAssign};
 
 use super::Vector4;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 #[repr(C)]
 pub struct Vector3<T> {
     x: T,

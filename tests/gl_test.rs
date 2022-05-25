@@ -5,7 +5,7 @@
 mod tests {
     use open_rl::{
         vector::Vector2,
-        shapes::{Rectangle, Drawable},
+        shapes::{Rectangle, Drawable, Shape2D},
         ComputeShader, PipelineShader, ShaderSource, GPU, SSBO, Color,
     };
 
@@ -258,7 +258,7 @@ mod tests {
         )?;
         shader.enable();
 
-        let rect = Rectangle::new(
+        let mut rect = Rectangle::new(
             Vector2::new(0.0, 0.0),
             Vector2::new(1.5, 1.5),
             Some(vec![
@@ -268,6 +268,11 @@ mod tests {
                 Color::new(1.0, 1.0, 1.0),
             ]),
         );
+
+        rect
+            .rotate(0.25 * 3.141592)
+            .translate(Vector2::new(0.5, 0.0))
+            .scale(0.75);
 
         'main: loop {
             for event in event_pump.poll_iter() {

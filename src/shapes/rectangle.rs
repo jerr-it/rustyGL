@@ -20,25 +20,41 @@ impl Drawable for Rectangle {
 }
 
 impl Shape2D for Rectangle {
-    fn translate(&mut self, translation: Vector2<f32>) {
-        self.center += translation;
+    fn translate(&mut self, translation: Vector2<f32>) -> &mut Rectangle {
+        for vertex in self.vertices.iter_mut() {
+            *vertex.position_mut() += translation.as_vector3();
+        }
+
+        self.update();
+        self
     }
 
-    fn rotate(&mut self, angle: f32) {
+    fn rotate(&mut self, angle: f32) -> &mut Rectangle {
+        let center = self.center.as_vector3();
+        let (cx, cy, _) = center.components();
+
         for vertex in self.vertices.iter_mut() {
             let position = vertex.position_mut();
-            
-            let (x, y, _) = position.components_mut();
+            let zeroed = *position - center;
 
-            *x = *x * angle.cos() - *y * angle.sin();
-            *y = *x * angle.sin() + *y * angle.cos();
+            let (x, y, _) = position.components_mut();
+            let (x0, y0, _) = zeroed.components();
+
+            *x = (x0 * angle.cos() - y0 * angle.sin()) + cx;
+            *y = (x0 * angle.sin() + y0 * angle.cos()) + cy;
         }
+
+        self.update();
+        self
     }
 
-    fn scale(&mut self, scl: f32) {
+    fn scale(&mut self, scl: f32) -> &mut Rectangle {
         for vertex in self.vertices.iter_mut() {
             *vertex.position_mut() *= scl;
         }
+
+        self.update();
+        self
     }
 }
 
@@ -120,5 +136,12 @@ impl Rectangle {
             vbo,
             ebo
         }
+    }
+
+    /// Apply changes made to the rectangles vertices 
+    /// by transfering them to the gpu
+    pub fn update(&self) {
+        self.vao.bind();
+        self.vbo.transfer(&self.vertices);
     }
 }

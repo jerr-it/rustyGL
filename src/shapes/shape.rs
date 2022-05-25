@@ -5,7 +5,7 @@ pub trait Drawable {
 }
 
 pub trait Shape2D {
-    fn translate(&mut self, translation: Vector2<f32>);
-    fn rotate(&mut self, angle: f32);
-    fn scale(&mut self, scl: f32);
+    fn translate(&mut self, translation: Vector2<f32>) -> &mut Self;
+    fn rotate(&mut self, angle: f32) -> &mut Self;
+    fn scale(&mut self, scl: f32) -> &mut Self;
 }

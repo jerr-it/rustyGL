@@ -3,6 +3,7 @@ use crate::{vector::{Vector2, Vector3}, Color};
 /// |-f32-|-f32-|-f32-|-f32-|-f32-|-f32-|-f32-|-f32-|  <br/>
 /// |-----Position----|------Color------|-UV-coords-|  
 #[repr(C)]
+#[derive(Debug)]
 pub struct Vertex {
     position: Vector3<f32>,
     color: Color<f32>,
