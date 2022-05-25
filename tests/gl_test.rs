@@ -267,6 +267,7 @@ mod tests {
                 Color::new(0.0, 0.0, 1.0),
                 Color::new(1.0, 1.0, 1.0),
             ]),
+            None, None, None
         );
 
         rect

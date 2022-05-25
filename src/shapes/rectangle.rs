@@ -67,8 +67,14 @@ impl Rectangle {
     /// * `center` - Center point of the rectangle
     /// * `dimensions` - Horizontal and vertical size of the rectangle
     /// * `colors` - Color for each corner. If only one color is specified it will be used for all corners. White will be used if no color is specified.
+    /// * `position_location` - GLSL shader location of position attributes (e.g. ( layout (location = 0) in vec3 vPos)). Assumes zero if 'None' is given.
+    /// * `color_location` - GLSL shader location of color attributes (e.g. ( layout (location = 1) in vec3 vColor)). Assumes one if 'None' is given.
+    /// * `position_location` - GLSL shader location of position attributes (e.g. ( layout (location = 2) in vec3 vTexCoord)). Assumes two if 'None' is given.
     /// ```
-    pub fn new(center: Vector2<f32>, dimensions: Vector2<f32>, colors: Option<Vec<Color<f32>>>) -> Rectangle {
+    pub fn new(
+        center: Vector2<f32>, dimensions: Vector2<f32>, colors: Option<Vec<Color<f32>>>, 
+        position_location: Option<u32>, color_location: Option<u32>, uv_location: Option<u32>
+    ) -> Rectangle {
         let (x, y) = center.components();
         let (width, height) = dimensions.components();
 
@@ -103,7 +109,10 @@ impl Rectangle {
         let vbo = VBO::new(Some(&vertices));
 
         vbo.set_attributes(
-            0, 
+            match position_location {
+                Some(location) => location,
+                None => 0,
+            }, 
             3, 
             gl::FLOAT, 
             gl::FALSE, 
@@ -112,7 +121,10 @@ impl Rectangle {
         );
 
         vbo.set_attributes(
-            1, 
+            match color_location {
+                Some(location) => location,
+                None => 1,
+            }, 
             3, 
             gl::FLOAT, 
             gl::FALSE, 
@@ -121,7 +133,10 @@ impl Rectangle {
         );
 
         vbo.set_attributes(
-            2, 
+            match uv_location {
+                Some(location) => location,
+                None => 2,
+            },  
             2, 
             gl::FLOAT, 
             gl::FALSE, 
