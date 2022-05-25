@@ -25,6 +25,8 @@ impl Shape2D for Rectangle {
             *vertex.position_mut() += translation.as_vector3();
         }
 
+        self.center += translation;
+
         self.update();
         self
     }
