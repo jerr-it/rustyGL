@@ -135,7 +135,7 @@ mod base {
     ///
     /// # Examples
     /// ```
-    /// use open_rl::base::compile_shader;
+    /// use rusty_gl::base::compile_shader;
     ///
     /// const SHADER_SOURCE: &str = "
     ///     #version 430
@@ -175,7 +175,7 @@ mod base {
     ///
     /// # Examples
     /// ```
-    /// use open_rl::base::compile_shader;
+    /// use rusty_gl::base::compile_shader;
     ///
     /// const SHADER_SOURCE: &str = "
     ///     #version 430

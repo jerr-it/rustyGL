@@ -3,7 +3,7 @@
 
 #[cfg(test)]
 mod tests {
-    use open_rl::{
+    use rusty_gl::{
         vector::{Vector2, Vector3},
         shapes::{Rectangle, Drawable, Shape2D, CustomShape},
         ComputeShader, PipelineShader, ShaderSource, GPU, SSBO, Color, vertices::Vertex,
@@ -39,7 +39,7 @@ mod tests {
         //---------
         //Test setup
         //---------
-        open_rl::debug::enable();
+        rusty_gl::debug::enable();
 
         pub const COMPUTE_SHADER: &str = "
             #version 430
@@ -141,7 +141,7 @@ mod tests {
         //-----------
         //Test setup
         //-----------
-        open_rl::debug::enable();
+        rusty_gl::debug::enable();
 
         pub const COMPUTE_SHADER: &str = "        
             #version 430
@@ -225,7 +225,7 @@ mod tests {
 
         gl::load_with(|s| video_subsystem.gl_get_proc_address(s) as *const _);
 
-        open_rl::debug::enable();
+        rusty_gl::debug::enable();
 
         const VERT_SHADER: &str = "
             #version 430
@@ -334,7 +334,7 @@ mod tests {
 
         unsafe { gl::Enable(gl::MULTISAMPLE); }
 
-        open_rl::debug::enable();
+        rusty_gl::debug::enable();
 
         const VERT_SHADER: &str = "
             #version 430
