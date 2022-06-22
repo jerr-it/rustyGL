@@ -3,23 +3,15 @@ use std::ops::{Add, AddAssign, Sub, SubAssign, Mul, MulAssign};
 #[derive(Clone, Copy, Debug)]
 #[repr(C)]
 pub struct Vector4<T> {
-    x: T,
-    y: T,
-    z: T,
-    w: T,
+    pub x: T,
+    pub y: T,
+    pub z: T,
+    pub w: T,
 }
 
 impl<T: Copy> Vector4<T> {
     pub fn new(x: T, y: T, z: T, w: T) -> Vector4<T>{
         Vector4 { x, y, z, w }
-    }
-
-    pub fn components(&self) -> (&T, &T, &T, &T) {
-        (&self.x, &self.y, &self.z, &self.w)
-    }
-
-    pub fn components_mut(&mut self) -> (&mut T, &mut T, &mut T, &mut T) {
-        (&mut self.x, &mut self.y, &mut self.z, &mut self.w)
     }
 }
 
@@ -86,5 +78,85 @@ impl<T: MulAssign + Copy> MulAssign<T> for Vector4<T> {
         self.y *= rhs;
         self.z *= rhs;
         self.w *= rhs;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_vector4_new() {
+        let vector4 = Vector4::new(1.0, 2.0, 3.0, 4.0);
+        assert_eq!(vector4.x, 1.0);
+        assert_eq!(vector4.y, 2.0);
+        assert_eq!(vector4.z, 3.0);
+        assert_eq!(vector4.w, 4.0);
+    }
+
+    #[test]
+    fn test_vector4_add() {
+        let vector4 = Vector4::new(1.0, 2.0, 3.0, 4.0);
+        let vector4_add = Vector4::new(2.0, 4.0, 6.0, 8.0);
+        let vector4_result = vector4 + vector4_add;
+        assert_eq!(vector4_result.x, 3.0);
+        assert_eq!(vector4_result.y, 6.0);
+        assert_eq!(vector4_result.z, 9.0);
+        assert_eq!(vector4_result.w, 12.0);
+    }
+
+    #[test]
+    fn test_vector4_add_assign() {
+        let mut vector4 = Vector4::new(1.0, 2.0, 3.0, 4.0);
+        let vector4_add = Vector4::new(2.0, 4.0, 6.0, 8.0);
+        vector4 += vector4_add;
+        assert_eq!(vector4.x, 3.0);
+        assert_eq!(vector4.y, 6.0);
+        assert_eq!(vector4.z, 9.0);
+        assert_eq!(vector4.w, 12.0);
+    }
+
+    #[test]
+    fn test_vector4_sub() {
+        let vector4 = Vector4::new(1.0, 2.0, 3.0, 4.0);
+        let vector4_sub = Vector4::new(2.0, 4.0, 6.0, 8.0);
+        let vector4_result = vector4 - vector4_sub;
+        assert_eq!(vector4_result.x, -1.0);
+        assert_eq!(vector4_result.y, -2.0);
+        assert_eq!(vector4_result.z, -3.0);
+        assert_eq!(vector4_result.w, -4.0);
+    }
+
+    #[test]
+    fn test_vector4_sub_assign() {
+        let mut vector4 = Vector4::new(1.0, 2.0, 3.0, 4.0);
+        let vector4_sub = Vector4::new(2.0, 4.0, 6.0, 8.0);
+        vector4 -= vector4_sub;
+        assert_eq!(vector4.x, -1.0);
+        assert_eq!(vector4.y, -2.0);
+        assert_eq!(vector4.z, -3.0);
+        assert_eq!(vector4.w, -4.0);
+    }
+
+    #[test]
+    fn test_vector4_mul() {
+        let vector4 = Vector4::new(1.0, 2.0, 3.0, 4.0);
+        let vector4_mul = 2.0;
+        let vector4_result = vector4 * vector4_mul;
+        assert_eq!(vector4_result.x, 2.0);
+        assert_eq!(vector4_result.y, 4.0);
+        assert_eq!(vector4_result.z, 6.0);
+        assert_eq!(vector4_result.w, 8.0);
+    }
+
+    #[test]
+    fn test_vector4_mul_assign() {
+        let mut vector4 = Vector4::new(1.0, 2.0, 3.0, 4.0);
+        let vector4_mul = 2.0;
+        vector4 *= vector4_mul;
+        assert_eq!(vector4.x, 2.0);
+        assert_eq!(vector4.y, 4.0);
+        assert_eq!(vector4.z, 6.0);
+        assert_eq!(vector4.w, 8.0);
     }
 }

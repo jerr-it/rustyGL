@@ -126,12 +126,11 @@ impl PipelineShader {
         unsafe {
             gl::UseProgram(self.id);
             let name = CString::new(name).unwrap();
-            let (x, y) = value.components();
 
             gl::Uniform2i(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                *x as i32, 
-                *y as i32
+                value.x as i32, 
+                value.y as i32
             );
         }
     }
@@ -140,13 +139,12 @@ impl PipelineShader {
         unsafe {
             gl::UseProgram(self.id);
             let name = CString::new(name).unwrap();
-            let (x, y, z) = value.components();
                 
             gl::Uniform3i(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                *x as i32, 
-                *y as i32, 
-                *z as i32
+                value.x as i32, 
+                value.y as i32, 
+                value.z as i32
             );
         }
     }
@@ -155,14 +153,13 @@ impl PipelineShader {
         unsafe {
             gl::UseProgram(self.id);
             let name = CString::new(name).unwrap();
-            let (x, y, z, w) = value.components();
 
             gl::Uniform4i(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                *x as i32, 
-                *y as i32, 
-                *z as i32, 
-                *w as i32
+                value.x as i32, 
+                value.y as i32, 
+                value.z as i32, 
+                value.w as i32
             );
         }
     }
@@ -183,12 +180,11 @@ impl PipelineShader {
         unsafe {
             gl::UseProgram(self.id);
             let name = CString::new(name).unwrap();
-            let (x, y) = value.components();
 
             gl::Uniform2f(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                *x, 
-                *y
+                value.x, 
+                value.y
             );
         }
     }
@@ -197,13 +193,12 @@ impl PipelineShader {
         unsafe {
             gl::UseProgram(self.id);
             let name = CString::new(name).unwrap();
-            let (x, y, z) = value.components();
 
             gl::Uniform3f(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                *x, 
-                *y, 
-                *z
+                value.x, 
+                value.y, 
+                value.z
             );
         }
     }
@@ -212,14 +207,13 @@ impl PipelineShader {
         unsafe {
             gl::UseProgram(self.id);
             let name = CString::new(name).unwrap();
-            let (x, y, z, w) = value.components();
 
             gl::Uniform4f(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                *x, 
-                *y, 
-                *z, 
-                *w
+                value.x, 
+                value.y, 
+                value.z, 
+                value.w
             );
         }
     }
@@ -240,12 +234,11 @@ impl PipelineShader {
         unsafe {
             gl::UseProgram(self.id);
             let name = CString::new(name).unwrap();
-            let (x, y) = value.components();
 
             gl::Uniform2i(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                *x, 
-                *y
+                value.x, 
+                value.y
             );
         }
     }
@@ -254,13 +247,12 @@ impl PipelineShader {
         unsafe {
             gl::UseProgram(self.id);
             let name = CString::new(name).unwrap();
-            let (x, y, z) = value.components();
 
             gl::Uniform3i(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                *x, 
-                *y, 
-                *z
+                value.x, 
+                value.y, 
+                value.z
             );
         }
     }
@@ -269,14 +261,13 @@ impl PipelineShader {
         unsafe {
             gl::UseProgram(self.id);
             let name = CString::new(name).unwrap();
-            let (x, y, z, w) = value.components();
 
             gl::Uniform4i(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                *x, 
-                *y, 
-                *z, 
-                *w
+                value.x, 
+                value.y, 
+                value.z, 
+                value.w
             );
         }
     }
@@ -297,12 +288,11 @@ impl PipelineShader {
         unsafe {
             gl::UseProgram(self.id);
             let name = CString::new(name).unwrap();
-            let (x, y) = value.components();
 
             gl::Uniform2ui(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                *x, 
-                *y
+                value.x, 
+                value.y
             );
         }
     }
@@ -311,13 +301,12 @@ impl PipelineShader {
         unsafe {
             gl::UseProgram(self.id);
             let name = CString::new(name).unwrap();
-            let (x, y, z) = value.components();
 
             gl::Uniform3ui(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                *x, 
-                *y, 
-                *z
+                value.x, 
+                value.y, 
+                value.z
             );
         }
     }
@@ -326,14 +315,13 @@ impl PipelineShader {
         unsafe {
             gl::UseProgram(self.id);
             let name = CString::new(name).unwrap();
-            let (x, y, z, w) = value.components();
 
             gl::Uniform4ui(
                 gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                *x, 
-                *y, 
-                *z, 
-                *w
+                value.x, 
+                value.y, 
+                value.z, 
+                value.w
             );
         }
     }

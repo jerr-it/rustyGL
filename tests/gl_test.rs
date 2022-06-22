@@ -5,7 +5,7 @@
 mod tests {
     use rusty_gl::{
         vector::{Vector2, Vector3},
-        shapes::{Rectangle, Drawable, Shape2D, CustomShape},
+        shapes::{Drawable, CustomShape},
         ComputeShader, PipelineShader, ShaderSource, GPU, SSBO, Color, vertices::Vertex,
     };
 
@@ -200,95 +200,6 @@ mod tests {
             assert_eq!(*ssbo, vec![123 as u32; 10]);
 
             break;
-        }
-
-        Ok(())
-    }
-
-    #[test]
-    fn rect_test() -> Result<(), Box<dyn std::error::Error>> {
-        let sdl = sdl2::init().unwrap();
-        let mut event_pump = sdl.event_pump().unwrap();
-
-        let video_subsystem = sdl.video().unwrap();
-        let gl_attrib = video_subsystem.gl_attr();
-        gl_attrib.set_context_profile(sdl2::video::GLProfile::Core);
-        gl_attrib.set_context_version(4, 5);
-
-        let window = video_subsystem
-            .window("Test", 100, 100)
-            .opengl()
-            .resizable()
-            .build()
-            .unwrap();
-        let _gl_context = window.gl_create_context().unwrap();
-
-        gl::load_with(|s| video_subsystem.gl_get_proc_address(s) as *const _);
-
-        rusty_gl::debug::enable();
-
-        const VERT_SHADER: &str = "
-            #version 430
-            layout (location = 0) in vec3 vPos;
-            layout (location = 1) in vec3 vColor;
-            layout (location = 2) in vec2 vTexCoord;
-
-            out vec3 outColor;
-
-            void main(){
-                gl_Position = vec4(vPos.x, vPos.y, vPos.z, 1.0);
-                outColor = vColor;
-            }
-        ";
-
-        const FRAG_SHADER: &str = "
-            #version 430
-            out vec4 FragColor;
-            in vec3 outColor;
-
-            void main()
-            {
-                FragColor = vec4(outColor, 1.0);
-            }
-        ";
-
-        let shader = PipelineShader::create(
-            Some(ShaderSource::String(VERT_SHADER)),
-            Some(ShaderSource::String(FRAG_SHADER)),
-        )?;
-        shader.enable();
-
-        let mut rect = Rectangle::new(
-            Vector2::new(0.0, 0.0),
-            Vector2::new(1.5, 1.5),
-            Some(vec![
-                Color::new(1.0, 0.0, 0.0),
-                Color::new(0.0, 1.0, 0.0),
-                Color::new(0.0, 0.0, 1.0),
-                Color::new(1.0, 1.0, 1.0),
-            ]),
-            None, None, None
-        );
-
-        rect
-            .rotate(0.25 * 3.141592)
-            .translate(Vector2::new(0.5, 0.0))
-            .scale(0.75);
-
-        'main: loop {
-            for event in event_pump.poll_iter() {
-                match event {
-                    sdl2::event::Event::Quit { .. } => break 'main,
-                    _ => {}
-                }
-            }
-            unsafe {
-                gl::ClearColor(0.0, 0.0, 0.0, 1.0);
-                gl::Clear(gl::COLOR_BUFFER_BIT);
-            }
-
-            rect.draw();
-            window.gl_swap_window();
         }
 
         Ok(())
