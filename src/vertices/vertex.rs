@@ -1,4 +1,5 @@
-use crate::{vector::{Vector2, Vector3}, Color};
+use crate::Color;
+use vector::{Vector2, Vector3};
 
 /// |-f32-|-f32-|-f32-|-f32-|-f32-|-f32-|-f32-|-f32-|  <br/>
 /// |-----Position----|------Color------|-UV-coords-|  

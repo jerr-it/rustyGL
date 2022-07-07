@@ -4,7 +4,6 @@ mod shader;
 mod ssbo;
 pub mod shapes;
 pub mod vertices;
-pub mod vector;
 
 pub use gpu::GPU;
 pub use shader::{ComputeShader, PipelineShader, ShaderSource};

@@ -1,6 +1,8 @@
 use std::ffi::c_void;
 
-use crate::{vertices::{Vertex, VAO, VBO}, vector::Vector3};
+use vector::Vector3;
+
+use crate::vertices::{Vertex, VAO, VBO};
 
 use super::Drawable;
 

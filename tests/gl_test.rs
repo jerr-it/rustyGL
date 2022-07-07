@@ -4,10 +4,11 @@
 #[cfg(test)]
 mod tests {
     use rusty_gl::{
-        vector::{Vector2, Vector3},
         shapes::{Drawable, CustomShape},
         ComputeShader, PipelineShader, ShaderSource, GPU, SSBO, Color, vertices::Vertex,
     };
+
+    use vector::{Vector2, Vector3};
 
     pub struct Resolution {
         x: u32,

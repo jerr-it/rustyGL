@@ -1,6 +1,6 @@
 use std::ffi::CString;
 
-use crate::vector::{Vector2, Vector3, Vector4};
+use vector::{Vector2, Vector3, Vector4};
 
 use super::{compile_shader, link_program, string_from_shader_source, ShaderSource};
 

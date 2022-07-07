@@ -1,4 +1,4 @@
-use crate::vector::Vector2;
+use vector::Vector2;
 
 pub trait Drawable {
     fn draw(&self);

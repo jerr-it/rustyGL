@@ -14,3 +14,4 @@ gl = "0.14.0"
 
 [dependencies]
 gl = "0.14.0"
+vector = { path = "../vector" }
