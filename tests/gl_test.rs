@@ -300,10 +300,8 @@ mod tests {
                     _ => {}
                 }
             }
-            unsafe {
-                gl::ClearColor(0.0, 0.0, 0.0, 1.0);
-                gl::Clear(gl::COLOR_BUFFER_BIT);
-            }
+
+            window.clear(Color::new(0.0, 0.0, 0.0));
 
             custom_shape_points.draw();
             custom_shape_lines.draw();

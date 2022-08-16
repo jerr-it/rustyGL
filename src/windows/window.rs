@@ -1,4 +1,4 @@
-use crate::PipelineShader;
+use crate::{Color, PipelineShader};
 
 use super::WindowBuilder;
 
@@ -11,6 +11,13 @@ pub struct Window {
 impl Window {
     pub fn new() -> WindowBuilder {
         WindowBuilder::default()
+    }
+
+    pub fn clear(&self, color: Color<f32>) {
+        unsafe {
+            gl::ClearColor(color.x, color.y, color.z, 1.0);
+            gl::Clear(gl::COLOR_BUFFER_BIT);
+        }
     }
 
     pub fn gl_swap(&self) {
