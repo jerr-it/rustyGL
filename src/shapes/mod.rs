@@ -1,5 +1,5 @@
-mod shape;
 mod custom;
+mod shape;
 
-pub use shape::{Shape2D, Drawable};
-pub use custom::CustomShape;
+pub use custom::CustomShape2D;
+pub use shape::{Drawable, Shape2D};

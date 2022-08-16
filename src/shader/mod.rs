@@ -7,9 +7,9 @@ pub use pipeline_shader::PipelineShader;
 
 mod base {
     /// Enables loading shaders from either a file or a hardcoded str
-    pub enum ShaderSource<'a> {
-        File(&'a str),
-        String(&'a str),
+    pub enum ShaderSource {
+        File(&'static str),
+        String(&'static str),
     }
 
     /// Loads a given shader source.

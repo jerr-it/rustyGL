@@ -4,8 +4,9 @@
 #[cfg(test)]
 mod tests {
     use rusty_gl::{
-        shapes::{Drawable, CustomShape},
-        ComputeShader, PipelineShader, ShaderSource, GPU, SSBO, Color, vertices::Vertex,
+        shapes::{CustomShape2D, Drawable},
+        vertices::Vertex,
+        Color, ComputeShader, PipelineShader, ShaderSource, GPU, SSBO,
     };
 
     use vector::{Vector2, Vector3};
@@ -231,22 +232,18 @@ mod tests {
         gl_attrib.set_context_profile(sdl2::video::GLProfile::Core);
         gl_attrib.set_context_version(4, 5);
 
-        //gl_attrib.set_multisample_buffers(1);
-        //gl_attrib.set_multisample_samples(8);
-
-        let window = video_subsystem
-            .window("Test", 600, 600)
-            .opengl()
-            .resizable()
-            .build()
-            .unwrap();
-        let _gl_context = window.gl_create_context().unwrap();
-
-        gl::load_with(|s| video_subsystem.gl_get_proc_address(s) as *const _);
-
-        unsafe { gl::Enable(gl::MULTISAMPLE); }
+        let window = rusty_gl::Window::new()
+            .dimensions(400, 400)
+            .title("Testing Window")
+            .build(&video_subsystem)?;
 
         rusty_gl::debug::enable();
+
+        //gl_attrib.set_multisample_buffers(1);
+        //gl_attrib.set_multisample_samples(8);
+        // unsafe {
+        //     gl::Enable(gl::MULTISAMPLE);
+        // }
 
         const VERT_SHADER: &str = "
             #version 430
@@ -280,30 +277,21 @@ mod tests {
         shader.enable();
 
         let mut vs = generate_circle(-0.8, 0.8);
-        vs.insert(0, Vertex::new(Vector3::new(-0.8, 0.8, 0.0), Color::new(1.0, 1.0, 1.0), Vector2::new(0.0, 0.0)));
-        let custom_shape_points = CustomShape::new(
-            vs,
-            gl::TRIANGLE_FAN,
-            None, None, None,
+        vs.insert(
+            0,
+            Vertex::new(
+                Vector3::new(-0.8, 0.8, 0.0),
+                Color::new(1.0, 1.0, 1.0),
+                Vector2::new(0.0, 0.0),
+            ),
         );
+        let custom_shape_points = CustomShape2D::new(vs, gl::TRIANGLE_FAN);
 
-        let custom_shape_lines = CustomShape::new(
-            generate_circle(-0.35, 0.8),
-            gl::LINES,
-            None, None, None,
-        );
+        let custom_shape_lines = CustomShape2D::new(generate_circle(-0.35, 0.8), gl::LINES);
 
-        let custom_shape_line_strip = CustomShape::new(
-            generate_circle(0.1, 0.8),
-            gl::LINE_STRIP,
-            None, None, None,
-        );
+        let custom_shape_line_strip = CustomShape2D::new(generate_circle(0.1, 0.8), gl::LINE_STRIP);
 
-        let custom_shape_line_loop = CustomShape::new(
-            generate_circle(0.55, 0.8),
-            gl::LINE_LOOP,
-            None, None, None,
-        );
+        let custom_shape_line_loop = CustomShape2D::new(generate_circle(0.55, 0.8), gl::LINE_LOOP);
 
         'main: loop {
             for event in event_pump.poll_iter() {
@@ -321,8 +309,8 @@ mod tests {
             custom_shape_lines.draw();
             custom_shape_line_strip.draw();
             custom_shape_line_loop.draw();
-            
-            window.gl_swap_window();
+
+            window.gl_swap();
         }
 
         Ok(())
