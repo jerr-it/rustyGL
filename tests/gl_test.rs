@@ -173,7 +173,7 @@ mod tests {
 
         assert_eq!(*ssbo, vec_on_gpu);
 
-        shader.set_uniform_int("value", 123);
+        shader.set_uniform("value", 123);
 
         'main: loop {
             for event in event_pump.poll_iter() {

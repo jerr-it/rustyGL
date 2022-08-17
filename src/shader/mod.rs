@@ -1,5 +1,6 @@
 mod compute_shader;
 mod pipeline_shader;
+mod uniform;
 
 pub use base::{compile_shader, link_program, string_from_shader_source, ShaderSource};
 pub use compute_shader::ComputeShader;
