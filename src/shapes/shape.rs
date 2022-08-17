@@ -1,7 +1,9 @@
 use vector::Vector2;
 
+use crate::PipelineShader;
+
 pub trait Drawable {
-    fn draw(&self);
+    fn draw(&self, shader: &PipelineShader);
 }
 
 pub trait Shape2D {

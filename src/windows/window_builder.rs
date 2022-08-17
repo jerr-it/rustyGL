@@ -1,4 +1,5 @@
 use sdl2::VideoSubsystem;
+use vector::Vector2;
 
 use crate::{PipelineShader, ShaderSource};
 
@@ -94,6 +95,8 @@ impl WindowBuilder {
         let pipeline_shader =
             PipelineShader::create(Some(self.vertex_shader), Some(self.fragment_shader))?;
         pipeline_shader.enable();
+
+        pipeline_shader.set_uniform("resolution", Vector2::new(self.width, self.height));
 
         Ok(Window {
             window,

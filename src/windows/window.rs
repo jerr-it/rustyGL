@@ -1,4 +1,4 @@
-use crate::{Color, PipelineShader};
+use crate::{shapes::Drawable, Color, PipelineShader};
 
 use super::WindowBuilder;
 
@@ -18,6 +18,10 @@ impl Window {
             gl::ClearColor(color.x, color.y, color.z, 1.0);
             gl::Clear(gl::COLOR_BUFFER_BIT);
         }
+    }
+
+    pub fn draw<T: Drawable>(&self, obj: &T) {
+        obj.draw(&self.pipeline_shader);
     }
 
     pub fn gl_swap(&self) {

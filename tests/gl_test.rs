@@ -4,9 +4,9 @@
 #[cfg(test)]
 mod tests {
     use rusty_gl::{
-        shapes::{CustomShape2D, Drawable},
+        shapes::{CustomShape2D, Drawable, Shape2D},
         vertices::Vertex,
-        Color, ComputeShader, PipelineShader, ShaderSource, GPU, SSBO,
+        Color, ComputeShader, ShaderSource, GPU, SSBO,
     };
 
     use vector::{Vector2, Vector3};
@@ -209,12 +209,12 @@ mod tests {
 
     #[test]
     fn custom_shape_test() -> Result<(), Box<dyn std::error::Error>> {
-        fn generate_circle(x: f32, y: f32) -> Vec<Vertex> {
+        fn generate_circle(x: f32, y: f32, radius: f32) -> Vec<Vertex> {
             let mut vertices = Vec::new();
 
             for angle in (0..360).step_by(5).map(|x| x as f32 * 3.14159265 / 180.0) {
                 vertices.push(Vertex::new(
-                    Vector3::new(x + 0.2 * angle.cos(), y + 0.2 * angle.sin(), 0.0),
+                    Vector3::new(x + radius * angle.cos(), y + radius * angle.sin(), 0.0),
                     Color::new(1.0, 1.0, 1.0),
                     Vector2::new(0.0, 0.0),
                 ));
@@ -245,22 +245,25 @@ mod tests {
         //     gl::Enable(gl::MULTISAMPLE);
         // }
 
-        let mut vs = generate_circle(-0.8, 0.8);
+        let mut vs = generate_circle(100.0, 100.0, 50.0);
         vs.insert(
             0,
             Vertex::new(
-                Vector3::new(-0.8, 0.8, 0.0),
+                Vector3::new(100.0, 100.0, 0.0),
                 Color::new(1.0, 1.0, 1.0),
                 Vector2::new(0.0, 0.0),
             ),
         );
-        let custom_shape_points = CustomShape2D::new(vs, gl::TRIANGLE_FAN);
 
-        let custom_shape_lines = CustomShape2D::new(generate_circle(-0.35, 0.8), gl::LINES);
+        let mut custom_shape_points = CustomShape2D::new(vs, gl::TRIANGLE_FAN);
 
-        let custom_shape_line_strip = CustomShape2D::new(generate_circle(0.1, 0.8), gl::LINE_STRIP);
+        let custom_shape_lines = CustomShape2D::new(generate_circle(300.0, 100.0, 50.0), gl::LINES);
 
-        let custom_shape_line_loop = CustomShape2D::new(generate_circle(0.55, 0.8), gl::LINE_LOOP);
+        let custom_shape_line_strip =
+            CustomShape2D::new(generate_circle(100.0, 300.0, 50.0), gl::LINE_STRIP);
+
+        let custom_shape_line_loop =
+            CustomShape2D::new(generate_circle(300.0, 300.0, 50.0), gl::LINE_LOOP);
 
         'main: loop {
             for event in event_pump.poll_iter() {
@@ -270,12 +273,14 @@ mod tests {
                 }
             }
 
+            custom_shape_points.translate(Vector2::new(0.03, 0.03));
+
             window.clear(Color::new(0.0, 0.0, 0.0));
 
-            custom_shape_points.draw();
-            custom_shape_lines.draw();
-            custom_shape_line_strip.draw();
-            custom_shape_line_loop.draw();
+            window.draw(&custom_shape_points);
+            window.draw(&custom_shape_lines);
+            window.draw(&custom_shape_line_strip);
+            window.draw(&custom_shape_line_loop);
 
             window.gl_swap();
         }
