@@ -87,7 +87,7 @@ impl WindowBuilder {
 
         let window = window.build()?;
 
-        let gl_context = window.gl_create_context()?;
+        let _gl_context = window.gl_create_context()?;
 
         gl::load_with(|s| video_subsystem.gl_get_proc_address(s) as *const _);
 
@@ -97,7 +97,7 @@ impl WindowBuilder {
 
         Ok(Window {
             window,
-            gl_context,
+            _gl_context,
             pipeline_shader,
         })
     }

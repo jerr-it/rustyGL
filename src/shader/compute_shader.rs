@@ -92,8 +92,8 @@ impl ComputeShader {
             let name = CString::new(name).unwrap();
 
             gl::Uniform1i(
-                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                value as i32
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8),
+                value as i32,
             );
         }
     }
@@ -104,23 +104,23 @@ impl ComputeShader {
             let name = CString::new(name).unwrap();
 
             gl::Uniform2i(
-                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                value.x as i32, 
-                value.y as i32
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8),
+                value.x as i32,
+                value.y as i32,
             );
         }
     }
-    
+
     pub fn set_uniform_bool3(&self, name: &str, value: Vector3<bool>) {
         unsafe {
             gl::UseProgram(self.id);
             let name = CString::new(name).unwrap();
-                
+
             gl::Uniform3i(
-                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                value.x as i32, 
-                value.y as i32, 
-                value.z as i32
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8),
+                value.x as i32,
+                value.y as i32,
+                value.z as i32,
             );
         }
     }
@@ -131,11 +131,11 @@ impl ComputeShader {
             let name = CString::new(name).unwrap();
 
             gl::Uniform4i(
-                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                value.x as i32, 
-                value.y as i32, 
-                value.z as i32, 
-                value.w as i32
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8),
+                value.x as i32,
+                value.y as i32,
+                value.z as i32,
+                value.w as i32,
             );
         }
     }
@@ -146,8 +146,8 @@ impl ComputeShader {
             let name = CString::new(name).unwrap();
 
             gl::Uniform1f(
-                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                value
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8),
+                value,
             );
         }
     }
@@ -158,23 +158,23 @@ impl ComputeShader {
             let name = CString::new(name).unwrap();
 
             gl::Uniform2f(
-                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                value.x, 
-                value.y
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8),
+                value.x,
+                value.y,
             );
         }
     }
-    
+
     pub fn set_uniform_float3(&self, name: &str, value: Vector3<f32>) {
         unsafe {
             gl::UseProgram(self.id);
             let name = CString::new(name).unwrap();
 
             gl::Uniform3f(
-                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                value.x, 
-                value.y, 
-                value.z
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8),
+                value.x,
+                value.y,
+                value.z,
             );
         }
     }
@@ -185,11 +185,11 @@ impl ComputeShader {
             let name = CString::new(name).unwrap();
 
             gl::Uniform4f(
-                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                value.x, 
-                value.y, 
-                value.z, 
-                value.w
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8),
+                value.x,
+                value.y,
+                value.z,
+                value.w,
             );
         }
     }
@@ -200,8 +200,8 @@ impl ComputeShader {
             let cstr = CString::new(name).unwrap();
 
             gl::Uniform1i(
-                gl::GetUniformLocation(self.id, cstr.as_ptr() as *const i8), 
-                value
+                gl::GetUniformLocation(self.id, cstr.as_ptr() as *const i8),
+                value,
             );
         }
     }
@@ -212,23 +212,23 @@ impl ComputeShader {
             let name = CString::new(name).unwrap();
 
             gl::Uniform2i(
-                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                value.x, 
-                value.y
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8),
+                value.x,
+                value.y,
             );
         }
     }
-    
+
     pub fn set_uniform_int3(&self, name: &str, value: Vector3<i32>) {
         unsafe {
             gl::UseProgram(self.id);
             let name = CString::new(name).unwrap();
 
             gl::Uniform3i(
-                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                value.x, 
-                value.y, 
-                value.z
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8),
+                value.x,
+                value.y,
+                value.z,
             );
         }
     }
@@ -239,11 +239,11 @@ impl ComputeShader {
             let name = CString::new(name).unwrap();
 
             gl::Uniform4i(
-                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                value.x, 
-                value.y, 
-                value.z, 
-                value.w
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8),
+                value.x,
+                value.y,
+                value.z,
+                value.w,
             );
         }
     }
@@ -254,8 +254,8 @@ impl ComputeShader {
             let name = CString::new(name).unwrap();
 
             gl::Uniform1ui(
-                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                value
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8),
+                value,
             );
         }
     }
@@ -266,23 +266,23 @@ impl ComputeShader {
             let name = CString::new(name).unwrap();
 
             gl::Uniform2ui(
-                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                value.x, 
-                value.y
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8),
+                value.x,
+                value.y,
             );
         }
     }
-    
+
     pub fn set_uniform_uint3(&self, name: &str, value: Vector3<u32>) {
         unsafe {
             gl::UseProgram(self.id);
             let name = CString::new(name).unwrap();
 
             gl::Uniform3ui(
-                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                value.x, 
-                value.y, 
-                value.z
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8),
+                value.x,
+                value.y,
+                value.z,
             );
         }
     }
@@ -293,11 +293,11 @@ impl ComputeShader {
             let name = CString::new(name).unwrap();
 
             gl::Uniform4ui(
-                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8), 
-                value.x, 
-                value.y, 
-                value.z, 
-                value.w
+                gl::GetUniformLocation(self.id, name.as_ptr() as *const i8),
+                value.x,
+                value.y,
+                value.z,
+                value.w,
             );
         }
     }

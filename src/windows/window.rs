@@ -4,7 +4,7 @@ use super::WindowBuilder;
 
 pub struct Window {
     pub(super) window: sdl2::video::Window,
-    pub(super) gl_context: sdl2::video::GLContext,
+    pub(super) _gl_context: sdl2::video::GLContext,
     pub(super) pipeline_shader: PipelineShader,
 }
 
