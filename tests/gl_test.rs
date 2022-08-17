@@ -274,6 +274,7 @@ mod tests {
             }
 
             custom_shape_points.translate(Vector2::new(0.03, 0.03));
+            custom_shape_points.rotate(0.05);
 
             window.clear(Color::new(0.0, 0.0, 0.0));
 

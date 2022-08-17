@@ -11,6 +11,8 @@ use super::{Drawable, Shape2D};
 
 pub struct CustomShape2D {
     center: Vector2<f32>,
+    angle: f32,
+
     vertices: Vec<Vertex>, // position is relative to center
 
     draw_mode: gl::types::GLenum,
@@ -23,6 +25,9 @@ impl Drawable for CustomShape2D {
     fn draw(&self, shader: &PipelineShader) {
         let v3: Vector3<f32> = self.center.into();
         shader.set_uniform("center", v3);
+
+        shader.set_uniform("angle", self.angle);
+
         self.vao
             .draw(self.draw_mode, self.vertices.len() as i32, false);
     }
@@ -35,7 +40,8 @@ impl Shape2D for CustomShape2D {
     }
 
     fn rotate(&mut self, angle: f32) -> &mut Self {
-        todo!()
+        self.angle += angle;
+        self
     }
 
     fn scale(&mut self, scl: f32) -> &mut Self {
@@ -120,6 +126,7 @@ impl CustomShape2D {
 
         CustomShape2D {
             center,
+            angle: 0.0,
             vertices,
             draw_mode,
             vao,
