@@ -91,13 +91,14 @@ impl WindowBuilder {
 
         gl::load_with(|s| video_subsystem.gl_get_proc_address(s) as *const _);
 
+        let pipeline_shader =
+            PipelineShader::create(Some(self.vertex_shader), Some(self.fragment_shader))?;
+        pipeline_shader.enable();
+
         Ok(Window {
             window,
             gl_context,
-            pipeline_shader: PipelineShader::create(
-                Some(self.vertex_shader),
-                Some(self.fragment_shader),
-            )?,
+            pipeline_shader,
         })
     }
 }

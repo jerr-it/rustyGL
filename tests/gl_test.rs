@@ -239,42 +239,11 @@ mod tests {
 
         rusty_gl::debug::enable();
 
-        //gl_attrib.set_multisample_buffers(1);
-        //gl_attrib.set_multisample_samples(8);
+        // gl_attrib.set_multisample_buffers(1);
+        // gl_attrib.set_multisample_samples(8);
         // unsafe {
         //     gl::Enable(gl::MULTISAMPLE);
         // }
-
-        const VERT_SHADER: &str = "
-            #version 430
-            layout (location = 0) in vec3 vPos;
-            layout (location = 1) in vec3 vColor;
-            layout (location = 2) in vec2 vTexCoord;
-
-            out vec3 outColor;
-
-            void main(){
-                gl_Position = vec4(vPos.x, vPos.y, vPos.z, 1.0);
-                outColor = vColor;
-            }
-        ";
-
-        const FRAG_SHADER: &str = "
-            #version 430
-            out vec4 FragColor;
-            in vec3 outColor;
-
-            void main()
-            {
-                FragColor = vec4(outColor, 1.0);
-            }
-        ";
-
-        let shader = PipelineShader::create(
-            Some(ShaderSource::String(VERT_SHADER)),
-            Some(ShaderSource::String(FRAG_SHADER)),
-        )?;
-        shader.enable();
 
         let mut vs = generate_circle(-0.8, 0.8);
         vs.insert(
