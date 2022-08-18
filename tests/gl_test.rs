@@ -237,7 +237,8 @@ mod tests {
 
         let mut custom_shape_points = CustomShape2D::new(vs, gl::TRIANGLE_FAN);
 
-        let custom_shape_lines = CustomShape2D::new(generate_circle(300.0, 100.0, 50.0), gl::LINES);
+        let mut custom_shape_lines =
+            CustomShape2D::new(generate_circle(300.0, 100.0, 50.0), gl::LINES);
 
         let custom_shape_line_strip =
             CustomShape2D::new(generate_circle(100.0, 300.0, 50.0), gl::LINE_STRIP);
@@ -253,8 +254,11 @@ mod tests {
                 }
             }
 
-            custom_shape_points.translate(Vector2::new(0.03, 0.03));
-            custom_shape_points.rotate(0.05);
+            custom_shape_points
+                .translate(Vector2::new(0.03, 0.03))
+                .rotate(0.05);
+
+            custom_shape_lines.scale(0.001).rotate(0.005);
 
             window.clear(color::BLACK);
 

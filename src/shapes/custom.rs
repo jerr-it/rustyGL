@@ -12,6 +12,7 @@ use super::{Drawable, Shape2D};
 pub struct CustomShape2D {
     center: Vector2<f32>,
     angle: f32,
+    scale: f32,
 
     vertices: Vec<Vertex>, // position is relative to center
 
@@ -27,6 +28,8 @@ impl Drawable for CustomShape2D {
         shader.set_uniform("center", v3);
 
         shader.set_uniform("angle", self.angle);
+
+        shader.set_uniform("scale", self.scale);
 
         self.vao
             .draw(self.draw_mode, self.vertices.len() as i32, false);
@@ -45,7 +48,8 @@ impl Shape2D for CustomShape2D {
     }
 
     fn scale(&mut self, scl: f32) -> &mut Self {
-        todo!()
+        self.scale += scl;
+        self
     }
 }
 
@@ -127,6 +131,7 @@ impl CustomShape2D {
         CustomShape2D {
             center,
             angle: 0.0,
+            scale: 1.0,
             vertices,
             draw_mode,
             vao,

@@ -7,6 +7,7 @@ layout (location = 1) in vec3 vColor;
 layout (location = 2) in vec2 vTexCoord;
 uniform vec3 center;
 uniform float angle;
+uniform float scale;
 
 out vec3 outColor;
 
@@ -26,8 +27,8 @@ void main() {
     pos = rotate(pos, angle);
 
     gl_Position = vec4(
-        map(center.x + pos.x, 0.0, resolution.x, -1.0, 1.0), 
-        map(center.y + pos.y, 0.0, resolution.y, -1.0, 1.0),
+        map(center.x + pos.x * scale, 0.0, resolution.x, -1.0, 1.0), 
+        map(center.y + pos.y * scale, 0.0, resolution.y, -1.0, 1.0),
         center.z + vPos.z, 
         1.0
     );
