@@ -27,4 +27,8 @@ impl Window {
     pub fn gl_swap(&self) {
         self.window.gl_swap_window();
     }
+
+    pub fn pipeline_shader(&self) -> &PipelineShader {
+        &self.pipeline_shader
+    }
 }

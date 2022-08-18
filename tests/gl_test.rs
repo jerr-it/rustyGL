@@ -4,7 +4,8 @@
 #[cfg(test)]
 mod tests {
     use rusty_gl::{
-        shapes::{CustomShape2D, Drawable, Shape2D},
+        color,
+        shapes::{CustomShape2D, Shape2D},
         vertices::Vertex,
         Color, ComputeShader, ShaderSource, GPU, SSBO,
     };
@@ -28,19 +29,11 @@ mod tests {
         gl_attrib.set_context_profile(sdl2::video::GLProfile::Core);
         gl_attrib.set_context_version(4, 5);
 
-        let window = video_subsystem
-            .window("Test", 100, 100)
-            .opengl()
-            .resizable()
-            .build()
-            .unwrap();
-        let _gl_context = window.gl_create_context().unwrap();
+        let window = rusty_gl::Window::new()
+            .dimensions(400, 400)
+            .title("Testing Window")
+            .build(&video_subsystem)?;
 
-        gl::load_with(|s| video_subsystem.gl_get_proc_address(s) as *const _);
-
-        //---------
-        //Test setup
-        //---------
         rusty_gl::debug::enable();
 
         pub const COMPUTE_SHADER: &str = "
@@ -93,17 +86,14 @@ mod tests {
                 }
             }
 
-            unsafe {
-                gl::ClearColor(0.0, 0.0, 0.0, 1.0);
-                gl::Clear(gl::COLOR_BUFFER_BIT);
-            }
+            window.clear(color::BLACK);
 
             //-----------
             //Test step
             //-----------
             shader.dispatch(1, 1, 1, gl::SHADER_STORAGE_BARRIER_BIT);
 
-            window.gl_swap_window();
+            window.gl_swap();
 
             //-----------
             //Test step verification
@@ -130,19 +120,11 @@ mod tests {
         gl_attrib.set_context_profile(sdl2::video::GLProfile::Core);
         gl_attrib.set_context_version(4, 5);
 
-        let window = video_subsystem
-            .window("Test", 100, 100)
-            .opengl()
-            .resizable()
-            .build()
-            .unwrap();
-        let _gl_context = window.gl_create_context().unwrap();
+        let window = rusty_gl::Window::new()
+            .dimensions(400, 400)
+            .title("Testing Window")
+            .build(&video_subsystem)?;
 
-        gl::load_with(|s| video_subsystem.gl_get_proc_address(s) as *const _);
-
-        //-----------
-        //Test setup
-        //-----------
         rusty_gl::debug::enable();
 
         pub const COMPUTE_SHADER: &str = "        
@@ -173,7 +155,7 @@ mod tests {
 
         assert_eq!(*ssbo, vec_on_gpu);
 
-        shader.set_uniform("value", 123);
+        shader.set_uniform("value", 123 as i32);
 
         'main: loop {
             for event in event_pump.poll_iter() {
@@ -182,17 +164,15 @@ mod tests {
                     _ => {}
                 }
             }
-            unsafe {
-                gl::ClearColor(0.0, 0.0, 0.0, 1.0);
-                gl::Clear(gl::COLOR_BUFFER_BIT);
-            }
+
+            window.clear(color::BLACK);
 
             //-----------
             //Test step
             //-----------
             shader.dispatch(10, 1, 1, gl::SHADER_STORAGE_BARRIER_BIT);
 
-            window.gl_swap_window();
+            window.gl_swap();
 
             //-----------
             //Test step verification
@@ -276,7 +256,7 @@ mod tests {
             custom_shape_points.translate(Vector2::new(0.03, 0.03));
             custom_shape_points.rotate(0.05);
 
-            window.clear(Color::new(0.0, 0.0, 0.0));
+            window.clear(color::BLACK);
 
             window.draw(&custom_shape_points);
             window.draw(&custom_shape_lines);
