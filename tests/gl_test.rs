@@ -5,7 +5,7 @@
 mod tests {
     use rusty_gl::{
         color,
-        shapes::{CustomShape2D, Shape2D},
+        shapes::{CustomShape2D, Rect, Shape2D},
         vertices::Vertex,
         Color, ComputeShader, ShaderSource, GPU, SSBO,
     };
@@ -188,7 +188,7 @@ mod tests {
     }
 
     #[test]
-    fn custom_shape_test() -> Result<(), Box<dyn std::error::Error>> {
+    fn shape_test() -> Result<(), Box<dyn std::error::Error>> {
         fn generate_circle(x: f32, y: f32, radius: f32) -> Vec<Vertex> {
             let mut vertices = Vec::new();
 
@@ -225,6 +225,10 @@ mod tests {
         //     gl::Enable(gl::MULTISAMPLE);
         // }
 
+        unsafe {
+            gl::PolygonMode(gl::FRONT_AND_BACK, gl::POINT);
+        }
+
         let mut vs = generate_circle(100.0, 100.0, 50.0);
         vs.insert(
             0,
@@ -246,9 +250,60 @@ mod tests {
         let custom_shape_line_loop =
             CustomShape2D::new(generate_circle(300.0, 300.0, 50.0), gl::LINE_LOOP);
 
+        let vs = vec![
+            Vertex::new(
+                Vector3::new(0.0, 0.0, 0.0),
+                color::WHITE,
+                Vector2::default(),
+            ),
+            Vertex::new(
+                Vector3::new(20.0, 0.0, 0.0),
+                color::WHITE,
+                Vector2::default(),
+            ),
+            Vertex::new(
+                Vector3::new(0.0, 20.0, 0.0),
+                color::WHITE,
+                Vector2::default(),
+            ),
+            Vertex::new(
+                Vector3::new(20.0, 20.0, 0.0),
+                color::WHITE,
+                Vector2::default(),
+            ),
+        ];
+        let mut test_rect = Rect::new(vs);
+        test_rect.translate(Vector2::new(200.0, 200.0));
+
         'main: loop {
             for event in event_pump.poll_iter() {
                 match event {
+                    sdl2::event::Event::KeyDown {
+                        timestamp,
+                        window_id,
+                        keycode,
+                        scancode,
+                        keymod,
+                        repeat,
+                    } => {
+                        if keycode.unwrap() == sdl2::keyboard::Keycode::Num1 {
+                            unsafe {
+                                gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
+                            }
+                        }
+
+                        if keycode.unwrap() == sdl2::keyboard::Keycode::Num2 {
+                            unsafe {
+                                gl::PolygonMode(gl::FRONT_AND_BACK, gl::POINT);
+                            }
+                        }
+
+                        if keycode.unwrap() == sdl2::keyboard::Keycode::Num3 {
+                            unsafe {
+                                gl::PolygonMode(gl::FRONT_AND_BACK, gl::FILL);
+                            }
+                        }
+                    }
                     sdl2::event::Event::Quit { .. } => break 'main,
                     _ => {}
                 }
@@ -259,6 +314,7 @@ mod tests {
                 .rotate(0.05);
 
             custom_shape_lines.scale(0.001).rotate(0.005);
+            // test_rect.rotate(0.05);
 
             window.clear(color::BLACK);
 
@@ -266,6 +322,7 @@ mod tests {
             window.draw(&custom_shape_lines);
             window.draw(&custom_shape_line_strip);
             window.draw(&custom_shape_line_loop);
+            window.draw(&test_rect);
 
             window.gl_swap();
         }

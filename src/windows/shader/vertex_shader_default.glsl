@@ -28,7 +28,7 @@ void main() {
 
     gl_Position = vec4(
         map(center.x + pos.x * scale, 0.0, resolution.x, -1.0, 1.0), 
-        map(center.y + pos.y * scale, 0.0, resolution.y, -1.0, 1.0),
+        map(center.y + pos.y * scale, 0.0, resolution.y, 1.0, -1.0),
         center.z + vPos.z, 
         1.0
     );
