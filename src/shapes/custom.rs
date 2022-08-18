@@ -34,24 +34,25 @@ impl Drawable for CustomShape2D {
         self.vao
             .draw(self.draw_mode, self.vertices.len() as i32, false);
     }
+
+    fn center_mut(&mut self) -> &mut Vector2<f32> {
+        &mut self.center
+    }
+
+    fn angle_mut(&mut self) -> &mut f32 {
+        &mut self.angle
+    }
+
+    fn scale_mut(&mut self) -> &mut f32 {
+        &mut self.scale
+    }
+
+    fn vbo(&self) -> &VBO {
+        &self.vbo
+    }
 }
 
-impl Shape2D for CustomShape2D {
-    fn translate(&mut self, translation: Vector2<f32>) -> &mut Self {
-        self.center += translation;
-        self
-    }
-
-    fn rotate(&mut self, angle: f32) -> &mut Self {
-        self.angle += angle;
-        self
-    }
-
-    fn scale(&mut self, scl: f32) -> &mut Self {
-        self.scale += scl;
-        self
-    }
-}
+impl Shape2D for CustomShape2D {}
 
 impl CustomShape2D {
     /// Create a new custom shape.
@@ -137,140 +138,5 @@ impl CustomShape2D {
             vao,
             vbo,
         }
-    }
-
-    /// Optionally set the position shader location of the shape.
-    /// # Arguments
-    /// * `location` - The location of the position shader attribute.
-    ///
-    /// # Example
-    /// ```
-    /// const VERT_SHADER: &str = "
-    ///     #version 430
-    ///     layout (location = 4) in vec3 vPos;
-    ///     layout (location = 5) in vec3 vColor;
-    ///     layout (location = 6) in vec2 vTexCoord;
-    ///     out vec3 outColor;
-    ///     void main() {
-    ///         gl_Position = vec4(vPos.x, vPos.y, vPos.z, 1.0);
-    ///         outColor = vColor;
-    ///     }
-    /// ";
-    ///
-    /// let custom_shape_points = CustomShape::new(vertices, gl::TRIANGLE_FAN)
-    ///     .position_shader_location(4)
-    ///     .color_shader_location(5)
-    ///     .uv_shader_location(6);
-    /// ```
-    pub fn position_shader_location(self, location: u32) -> Self {
-        self.vbo.set_attributes(
-            location,
-            3,
-            gl::FLOAT,
-            gl::FALSE,
-            std::mem::size_of::<Vertex>() as i32,
-            std::ptr::null(),
-        );
-
-        self
-    }
-
-    /// Optionally set the color shader location of the shape.
-    /// # Arguments
-    /// * `location` - The location of the position shader attribute.
-    ///
-    /// # Example
-    /// ```
-    /// const VERT_SHADER: &str = "
-    ///     #version 430
-    ///     layout (location = 4) in vec3 vPos;
-    ///     layout (location = 5) in vec3 vColor;
-    ///     layout (location = 6) in vec2 vTexCoord;
-    ///     out vec3 outColor;
-    ///     void main() {
-    ///         gl_Position = vec4(vPos.x, vPos.y, vPos.z, 1.0);
-    ///         outColor = vColor;
-    ///     }
-    /// ";
-    ///
-    /// let custom_shape_points = CustomShape::new(vertices, gl::TRIANGLE_FAN)
-    ///     .position_shader_location(4)
-    ///     .color_shader_location(5)
-    ///     .uv_shader_location(6);
-    /// ```
-    pub fn color_shader_location(self, location: u32) -> Self {
-        self.vbo.set_attributes(
-            location,
-            3,
-            gl::FLOAT,
-            gl::FALSE,
-            std::mem::size_of::<Vertex>() as i32,
-            unsafe { std::ptr::null::<Vector3<f32>>().add(1) as *const c_void },
-        );
-
-        self
-    }
-
-    /// Optionally set the uv shader location of the shape.
-    /// # Arguments
-    /// * `location` - The location of the position shader attribute.
-    ///
-    /// # Example
-    /// ```
-    /// const VERT_SHADER: &str = "
-    ///     #version 430
-    ///     layout (location = 4) in vec3 vPos;
-    ///     layout (location = 5) in vec3 vColor;
-    ///     layout (location = 6) in vec2 vTexCoord;
-    ///     out vec3 outColor;
-    ///     void main() {
-    ///         gl_Position = vec4(vPos.x, vPos.y, vPos.z, 1.0);
-    ///         outColor = vColor;
-    ///     }
-    /// ";
-    ///
-    /// let custom_shape_points = CustomShape::new(vertices, gl::TRIANGLE_FAN)
-    ///     .position_shader_location(4)
-    ///     .color_shader_location(5)
-    ///     .uv_shader_location(6);
-    /// ```
-    pub fn uv_shader_location(self, location: u32) -> Self {
-        self.vbo.set_attributes(
-            location,
-            2,
-            gl::FLOAT,
-            gl::FALSE,
-            std::mem::size_of::<Vertex>() as i32,
-            unsafe { std::ptr::null::<Vector3<f32>>().add(2) as *const c_void },
-        );
-
-        self
-    }
-
-    /// Specify a custom center location for the shape.
-    /// # Arguments
-    /// * `center` - The center location of the shape.
-    /// # Example
-    /// ```
-    /// const VERT_SHADER: &str = "
-    ///    #version 430
-    ///    layout (location = 4) in vec3 vPos;
-    ///    layout (location = 5) in vec3 vColor;
-    ///    layout (location = 6) in vec2 vTexCoord;
-    ///    out vec3 outColor;
-    ///    void main() {
-    ///        gl_Position = vec4(vPos.x, vPos.y, vPos.z, 1.0);
-    ///        outColor = vColor;
-    ///    }
-    /// ";
-    /// let custom_shape_points = CustomShape::new(vertices, gl::TRIANGLE_FAN)
-    ///    .center(Vector2::new(20.0, 20.0))
-    ///    .position_shader_location(4)
-    ///    .color_shader_location(5)
-    ///    .uv_shader_location(6);
-    /// ```
-    pub fn center(mut self, center: Vector2<f32>) -> Self {
-        self.center = center;
-        self
     }
 }
