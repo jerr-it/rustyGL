@@ -192,7 +192,7 @@ mod tests {
         fn generate_circle(x: f32, y: f32, radius: f32) -> Vec<Vertex> {
             let mut vertices = Vec::new();
 
-            for angle in (0..360).step_by(5).map(|x| x as f32 * 3.14159265 / 180.0) {
+            for angle in (0..360).step_by(10).map(|x| x as f32 * 3.14159265 / 180.0) {
                 vertices.push(Vertex::new(
                     Vector3::new(x + radius * angle.cos(), y + radius * angle.sin(), 0.0),
                     Color::new(1.0, 1.0, 1.0),
@@ -257,18 +257,14 @@ mod tests {
                 Vector2::default(),
             ),
             Vertex::new(
-                Vector3::new(20.0, 0.0, 0.0),
-                color::WHITE,
+                Vector3::new(50.0, 0.0, 0.0),
+                color::GREEN,
                 Vector2::default(),
             ),
+            Vertex::new(Vector3::new(0.0, 50.0, 0.0), color::RED, Vector2::default()),
             Vertex::new(
-                Vector3::new(0.0, 20.0, 0.0),
-                color::WHITE,
-                Vector2::default(),
-            ),
-            Vertex::new(
-                Vector3::new(20.0, 20.0, 0.0),
-                color::WHITE,
+                Vector3::new(50.0, 50.0, 0.0),
+                color::BLUE,
                 Vector2::default(),
             ),
         ];
@@ -278,14 +274,7 @@ mod tests {
         'main: loop {
             for event in event_pump.poll_iter() {
                 match event {
-                    sdl2::event::Event::KeyDown {
-                        timestamp,
-                        window_id,
-                        keycode,
-                        scancode,
-                        keymod,
-                        repeat,
-                    } => {
+                    sdl2::event::Event::KeyDown { keycode, .. } => {
                         if keycode.unwrap() == sdl2::keyboard::Keycode::Num1 {
                             unsafe {
                                 gl::PolygonMode(gl::FRONT_AND_BACK, gl::LINE);
