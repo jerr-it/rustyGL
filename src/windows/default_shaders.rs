@@ -1,3 +1,4 @@
+pub(super) const VERTEX_SHADER: &str = "
 #version 430
 
 uniform uvec2 resolution;
@@ -35,3 +36,15 @@ void main() {
 
     outColor = vColor;
 }
+";
+
+pub(super) const FRAGMENT_SHADER: &str = "
+#version 430
+
+out vec4 FragColor;
+in vec3 outColor;
+
+void main() {
+    FragColor = vec4(outColor, 1.0);
+}
+";

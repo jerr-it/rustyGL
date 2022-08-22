@@ -1,3 +1,4 @@
+mod default_shaders;
 mod window;
 mod window_builder;
 

@@ -3,10 +3,10 @@ use vector::Vector2;
 
 use crate::{PipelineShader, ShaderSource};
 
-use super::Window;
-
-const DEFAULT_VERTEX_SHADER_PATH: &str = "src/windows/shader/vertex_shader_default.glsl";
-const DEFAULT_FRAGMENT_SHADER_PATH: &str = "src/windows/shader/fragment_shader_default.glsl";
+use super::{
+    default_shaders::{FRAGMENT_SHADER, VERTEX_SHADER},
+    Window,
+};
 
 pub struct WindowBuilder {
     pub(super) title: String,
@@ -26,8 +26,8 @@ impl Default for WindowBuilder {
             height: 400,
             fullscreen: false,
             resizable: false,
-            vertex_shader: ShaderSource::File(DEFAULT_VERTEX_SHADER_PATH),
-            fragment_shader: ShaderSource::File(DEFAULT_FRAGMENT_SHADER_PATH),
+            vertex_shader: ShaderSource::String(VERTEX_SHADER),
+            fragment_shader: ShaderSource::String(FRAGMENT_SHADER),
         }
     }
 }
