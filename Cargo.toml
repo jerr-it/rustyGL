@@ -15,4 +15,4 @@ gl = "0.14.0"
 [dependencies]
 sdl2 = "0.35.1"
 gl = "0.14.0"
-vector = { path = "../vector" }
+vector = { git = "https://github.com/jerrit200/vector-rs.git" }
